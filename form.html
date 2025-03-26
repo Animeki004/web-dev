@@ -10,17 +10,23 @@
 <body>
     <form action="/index.html">
 
-
+<!-- connecting the lable tag to input tag using the "id" attribute and "for" attribute-->
     <div><label for="Username"> Username</label>
-        <input type="text" id="Username" placeholder="Enter name">
+        <!--"name" attribute use to Uniquely identify.Form data.When submitting to server -->
+        <input type="text" id="Username" placeholder="Enter name" name="user">
     </div>
     <div><label for="password"> Password</label>
-        <input type="password" id="password" placeholder="Enter password">
+        <!-- Placeholder are use to show the hint about what to fill in input -->
+        <input type="password" id="password" placeholder="Enter password" name="pass">
     </div>
     <div><label for="number">Number</label>
-        <input type="number" id="number" placeholder="Enter Number">
+        <input type="number" id="number" placeholder="Enter Number" name="num">
     </div>
 <button>Submit</button>
+<button type="reset">Reset</button>
+<!-- button using input element with the help of type atrtribute like "button","reset","submit"-->
+<input type="submit" >
+<input type="button" value="click me">
 </form>
 
 </body>
