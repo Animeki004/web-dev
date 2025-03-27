@@ -115,6 +115,7 @@ hr {
 }
 .anime-poster img {
   width: 300px;
+  border-radius: 10px;
   height: 300px;
 }
 .anime-details {
