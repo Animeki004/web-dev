@@ -15,16 +15,20 @@ h1 {
   text-align: center;
 }
 hr {
-  background-color: #424242;
-  padding: 2px;
-  border: #424242;
+  background-color: #424242 !important;
+  padding: 2px !important;
+  border: none !important;
+  height: 2px !important;
+  width: 90% !important;
 }
+
 /* Container to arrange cards in a row */
 .card-container {
-  display: flex; /* Makes cards align in a row */
+  display: grid; /* Makes cards align in a row */
   gap: 20px; /* Space between cards */
   overflow-x: auto; /* Enables horizontal scrolling if needed */
   padding: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
 /* Individual Card */
