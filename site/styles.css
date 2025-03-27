@@ -87,6 +87,18 @@ hr {
   max-width: 900px;
   margin-top: 20px;
 }
+
+/* Move details below image on small screens */
+@media (max-width: 768px) {
+  .anime-container {
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center align */
+  }
+
+  .anime-details {
+    margin-left: 0; /* Remove left margin */
+  }
+}
 .anime-poster img {
   width: 250px;
   border-radius: 10px;
