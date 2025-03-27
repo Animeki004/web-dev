@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Search ki Duniya</title>
+  </head>
+
+  <body>
+    <form action="https://www.youtube.com/results">
+      <img src="youtube.png" alt="youtube img" height="50px" width="150px" />
+      <div>
+        <label for="Search">Search</label>
+        <input
+          type="text"
+          id="Search"
+          placeholder="Search in youtube"
+          name="search_query"
+          required
+        />
+      </div>
+      <button type="submit">Search</button>
+    </form>
+    <hr />
+    <form action="https://www.google.com/search">
+      <img src="google.png" alt="google img" height="50px" width="150px" />
+      <div>
+        <label for="Search">Search</label>
+        <input
+          type="text"
+          id="Search"
+          placeholder="Search in Google"
+          name="q"
+          required
+        />
+      </div>
+
+      <button type="submit">Search</button>
+      <button></button>
+    </form>
+    <form action="/server">
+      <input type="checkbox" id="age" name="age" required />
+      <label for="age"> i am 18+</label>
+      <button type="submit">submit</button>
+    </form>
+  </body>
+</html>
