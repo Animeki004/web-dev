@@ -107,11 +107,15 @@ hr {
   .anime-details {
     margin-left: 0; /* Remove left margin */
   }
+  .anime-poster img {
+    width: 300px;
+    border-radius: 10px;
+    height: 400px;
+  }
 }
 .anime-poster img {
   width: 300px;
-  border-radius: 10px;
-  height: 400px;
+  height: 300px;
 }
 .anime-details {
   margin-left: 20px;
