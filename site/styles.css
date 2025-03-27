@@ -38,7 +38,7 @@ hr {
   transition: transform 0.4s ease-in-out;
   color: white;
 }
-.link1 {
+.card a {
   color: white;
   text-decoration: none;
 }
