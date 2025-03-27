@@ -1,6 +1,16 @@
 body {
   background-color: #212121;
 }
+/* This for pages */
+.body1 {
+  font-family: Arial, sans-serif;
+  background-color: #1a1a1a;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+}
 header {
   display: flex;
   justify-content: center;
@@ -14,6 +24,11 @@ h1 {
   position: relative;
   text-align: center;
 }
+.ph1 {
+  margin: 0;
+  color: #ffcc00;
+}
+
 hr {
   background-color: #424242 !important;
   padding: 2px !important;
@@ -28,7 +43,7 @@ hr {
   gap: 20px; /* Space between cards */
   overflow-x: auto; /* Enables horizontal scrolling if needed */
   padding: 20px;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
 
 /* Individual Card */
@@ -42,9 +57,43 @@ hr {
   transition: transform 0.4s ease-in-out;
   color: white;
 }
+/* card <a> tag */
 .card #r1 {
   color: white;
   text-decoration: none;
+}
+/* page css */
+.info {
+  margin: 10px 0;
+}
+
+.advertisement {
+  width: 80%;
+  max-width: 900px;
+  background: #333;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  margin: 20px 0;
+  border-radius: 5px;
+}
+.anime-container {
+  display: flex;
+  background: #222;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+  width: 80%;
+  max-width: 900px;
+  margin-top: 20px;
+}
+.anime-poster img {
+  width: 250px;
+  border-radius: 10px;
+  height: 400px;
+}
+.anime-details {
+  margin-left: 20px;
 }
 
 /* Card Image */
@@ -62,4 +111,14 @@ hr {
 /* Hover Effect */
 .card:hover {
   transform: scale(1.05);
+}
+footer {
+  background: #111;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  width: 90%;
+  position: relative;
+  bottom: 0;
+  margin-top: 20px;
 }
