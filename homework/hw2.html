@@ -5,62 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Feedback Form</title>
     <link rel="stylesheet" href="styles1.css" />
+    <link rel="stylesheet" href="../site/styles.css" />
   </head>
   <body>
-    <div class="container">
-      <h1>Feedback Form</h1>
-      <form action="/server">
-        <div class="input-group">
-          <label for="name">Name:</label>
-          <input
-            type="text"
-            name="name"
-            id="name"
-            placeholder="Enter your name"
-            required
-          />
-        </div>
-
-        <div class="input-group">
-          <label for="mail">Email:</label>
-          <input
-            type="email"
-            name="mail"
-            id="mail"
-            placeholder="Enter your email"
-            required
-          />
-        </div>
-
-        <div class="input-group">
-          <label for="msg">Message:</label>
-          <textarea
-            name="msg"
-            id="msg"
-            placeholder="Enter your message"
-            rows="4"
-            required
-          ></textarea>
-        </div>
-
-        <div class="input-group">
-          <label>Rate us out of 5:</label>
-          <div class="radio-group">
-            <input type="radio" name="rat" id="rat" value="1" required />
-            <label for="rat">1</label>
-            <input type="radio" name="rat" id="rat1" value="2" required />
-            <label for="rat1">2</label>
-            <input type="radio" name="rat" id="rat2" value="3" required />
-            <label for="rat2">3</label>
-            <input type="radio" name="rat" id="rat3" value="4" required />
-            <label for="rat3">4</label>
-            <input type="radio" name="rat" id="rat4" value="5" required />
-            <label for="rat4">5</label>
+    <header>
+      <a href="../site/index.html">
+        <img id="logo" src="../site/assets/img/logo23.png" alt="logo img" />
+      </a>
+      <nav>
+        <ul class="menu">
+          <li><a href="../homework/hw2.html">Feedback</a></li>
+          <li><a href="../index.html">Register</a></li>
+          <li><a href="../homework/hw.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="menu-toggle">&#9776;</div>
+      <!-- Hamburger Icon -->
+    </header>
+    <hr />
+    <div class="body3">
+      <div class="container">
+        <h1>Feedback Form</h1>
+        <form action="/server">
+          <div class="input-group">
+            <label for="name">Name:</label>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              placeholder="Enter your name"
+              required
+            />
           </div>
-        </div>
 
-        <button type="submit">Send your message!</button>
-      </form>
+          <div class="input-group">
+            <label for="mail">Email:</label>
+            <input
+              type="email"
+              name="mail"
+              id="mail"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div class="input-group">
+            <label for="msg">Message:</label>
+            <textarea
+              name="msg"
+              id="msg"
+              placeholder="Enter your message"
+              rows="4"
+              required
+            ></textarea>
+          </div>
+
+          <div class="input-group">
+            <label>Rate us out of 5:</label>
+            <div class="radio-group">
+              <input type="radio" name="rat" id="rat" value="1" required />
+              <label for="rat">1</label>
+              <input type="radio" name="rat" id="rat1" value="2" required />
+              <label for="rat1">2</label>
+              <input type="radio" name="rat" id="rat2" value="3" required />
+              <label for="rat2">3</label>
+              <input type="radio" name="rat" id="rat3" value="4" required />
+              <label for="rat3">4</label>
+              <input type="radio" name="rat" id="rat4" value="5" required />
+              <label for="rat4">5</label>
+            </div>
+          </div>
+
+          <button type="submit">Send your message!</button>
+        </form>
+      </div>
     </div>
+    <script src="../site/script.js"></script>
+    <footer>
+      <p>&copy; 2025 FrendHub. All rights reserved.</p>
+      <p>
+        <a href="#" style="color: #ffcc00; text-decoration: none">Fk Policy</a>
+        |
+        <a href="#" style="color: #ffcc00; text-decoration: none">Service</a>
+      </p>
+    </footer>
   </body>
 </html>

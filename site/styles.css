@@ -24,6 +24,12 @@ header {
   align-items: center !important;
   justify-content: space-between !important;
   padding: 15px 30px !important;
+  position: sticky;
+  top: 0;
+  background: #232323; /* Keep background so content doesn't overlap */
+  z-index: 1000; /* Ensures header stays above other elements */
+  backdrop-filter: blur(10px);
+  opacity: 0.85;
 }
 
 #logo {

@@ -10,7 +10,7 @@
 }
 
 /* Centering the Form */
-body {
+.body2 {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -30,9 +30,9 @@ body {
 
 /* Heading */
 h1 {
-  margin-bottom: 20px;
-  font-weight: 600;
-  color: #333;
+  margin-bottom: 20px !important;
+  font-weight: 600 !important;
+  color: #333 !important;
 }
 
 /* Input Groups */
