@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Practice Qs</title>
   </head>
+
   <body>
     <h1>List of Fruits</h1>
     <ul>
@@ -32,5 +33,132 @@
         <button type="submit">Submit</button>
       </div>
     </form>
+    <br />
+    <hr />
+    <div style="background-color: black">
+      <table border="black" style="color: white; margin-left: 20px">
+        <caption>
+          Student information
+        </caption>
+        <tr>
+          <th rowspan="6">Info</th>
+          <th rowspan="2">Name</th>
+          <th colspan="2">Address</th>
+        </tr>
+        <tr>
+          <th>City</th>
+          <th>House</th>
+        </tr>
+        <tr>
+          <td>A</td>
+          <td>Delhi</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td>B</td>
+          <td>Mumbai</td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td>C</td>
+          <td>Kolkata</td>
+          <td>3</td>
+        </tr>
+        <tr>
+          <td>D</td>
+          <td>Pune</td>
+          <td>4</td>
+        </tr>
+      </table>
+    </div>
+    <br />
+    <hr />
+    <div>
+      <form action="/server">
+        <label for="usr_nm">Name:</label>
+        <input type="text" name="usr_nm" id="usr_nm" />
+        <br />
+        <div>
+          <label>Sex</label>
+          <input type="radio" name="sex" id="m" value="m" />
+          <label for="m">Male</label>
+          <input type="radio" name="sex" id="f" value="f" />
+          <label for="f">Female</label>
+        </div>
+        <label for="country">Counntry:</label>
+        <select name="country" id="country">
+          <option disabled selected>Select an option</option>
+          <option value="AFG">Afghanistan</option>
+          <option value="ALB">Albania</option>
+          <option value="DZA">Algeria</option>
+          <option value="AND">Andorra</option>
+          <option value="AGO">Angola</option>
+          <option value="ARG">Argentina</option>
+          <option value="ARM">Armenia</option>
+          <option value="AUS">Australia</option>
+          <option value="AUT">Austria</option>
+          <option value="AZE">Azerbaijan</option>
+          <option value="BGD">Bangladesh</option>
+          <option value="BLR">Belarus</option>
+          <option value="BEL">Belgium</option>
+          <option value="BRA">Brazil</option>
+          <option value="CAN">Canada</option>
+          <option value="CHN">China</option>
+          <option value="COL">Colombia</option>
+          <option value="EGY">Egypt</option>
+          <option value="FRA">France</option>
+          <option value="DEU">Germany</option>
+          <option value="GRC">Greece</option>
+          <option value="HKG">Hong Kong</option>
+          <option value="IND">India</option>
+          <option value="IDN">Indonesia</option>
+          <option value="IRN">Iran</option>
+          <option value="IRQ">Iraq</option>
+          <option value="IRL">Ireland</option>
+          <option value="ISR">Israel</option>
+          <option value="ITA">Italy</option>
+          <option value="JPN">Japan</option>
+          <option value="KEN">Kenya</option>
+          <option value="MEX">Mexico</option>
+          <option value="NLD">Netherlands</option>
+          <option value="NZL">New Zealand</option>
+          <option value="NGA">Nigeria</option>
+          <option value="NOR">Norway</option>
+          <option value="PAK">Pakistan</option>
+          <option value="POL">Poland</option>
+          <option value="PRT">Portugal</option>
+          <option value="RUS">Russia</option>
+          <option value="SAU">Saudi Arabia</option>
+          <option value="SGP">Singapore</option>
+          <option value="ZAF">South Africa</option>
+          <option value="KOR">South Korea</option>
+          <option value="ESP">Spain</option>
+          <option value="SWE">Sweden</option>
+          <option value="CHE">Switzerland</option>
+          <option value="THA">Thailand</option>
+          <option value="TUR">Turkey</option>
+          <option value="UKR">Ukraine</option>
+          <option value="GBR">United Kingdom</option>
+          <option value="USA">United States</option>
+          <option value="VNM">Vietnam</option>
+        </select>
+        <div>
+          <label for="msg">Message:</label>
+          <br />
+          <textarea
+            name="msg"
+            id="msg"
+            placeholder="Enter ur Message"
+            rows="4"
+            cols="30"
+          ></textarea>
+        </div>
+        <div>
+          <input type="checkbox" name="subs" id="subs" required />
+          <label for="subs">Subscribe?</label>
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
   </body>
 </html>
