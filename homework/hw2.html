@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feedback Form</title>
+    <link rel="stylesheet" href="styles1.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Feedback Form</h1>
+      <form action="/server">
+        <div class="input-group">
+          <label for="name">Name:</label>
+          <input
+            type="text"
+            name="name"
+            id="name"
+            placeholder="Enter your name"
+            required
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="mail">Email:</label>
+          <input
+            type="email"
+            name="mail"
+            id="mail"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="msg">Message:</label>
+          <textarea
+            name="msg"
+            id="msg"
+            placeholder="Enter your message"
+            rows="4"
+            required
+          ></textarea>
+        </div>
+
+        <div class="input-group">
+          <label>Rate us out of 5:</label>
+          <div class="radio-group">
+            <input type="radio" name="rat" id="rat" value="1" required />
+            <label for="rat">1</label>
+            <input type="radio" name="rat" id="rat1" value="2" required />
+            <label for="rat1">2</label>
+            <input type="radio" name="rat" id="rat2" value="3" required />
+            <label for="rat2">3</label>
+            <input type="radio" name="rat" id="rat3" value="4" required />
+            <label for="rat3">4</label>
+            <input type="radio" name="rat" id="rat4" value="5" required />
+            <label for="rat4">5</label>
+          </div>
+        </div>
+
+        <button type="submit">Send your message!</button>
+      </form>
+    </div>
+  </body>
+</html>

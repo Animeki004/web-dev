@@ -1,45 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Registration Form</title>
     <link rel="stylesheet" href="styles.css" />
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="container">
-        <h1>Registration Form</h1>
-        <form action="/server">
-            <div class="input-group">
-                <label for="f_name">First Name</label>
-                <input type="text" name="f_name" id="f_name" placeholder="Enter First Name" required />
-            </div>
+      <h1>Registration Form</h1>
+      <form action="/server">
+        <div class="input-group">
+          <label for="f_name">First Name</label>
+          <input
+            type="text"
+            name="f_name"
+            id="f_name"
+            placeholder="Enter First Name"
+            required
+          />
+        </div>
 
-            <div class="input-group">
-                <label for="l_name">Last Name</label>
-                <input type="text" name="l_name" id="l_name" placeholder="Enter Last Name" required />
-            </div>
+        <div class="input-group">
+          <label for="l_name">Last Name</label>
+          <input
+            type="text"
+            name="l_name"
+            id="l_name"
+            placeholder="Enter Last Name"
+            required
+          />
+        </div>
 
-            <div class="input-group">
-                <label for="gen">Please select gender</label>
-                <select name="gender" id="gen" required>
-                    <option value="" disabled selected>Select your gender</option>
-                    <option value="m">Male</option>
-                    <option value="f">Female</option>
-                    <option value="o">Other</option>
-                </select>
-            </div>
+        <div class="input-group">
+          <label for="gen">Please select gender</label>
+          <select name="gender" id="gen" required>
+            <option value="" disabled selected>Select your gender</option>
+            <option value="m">Male</option>
+            <option value="f">Female</option>
+            <option value="o">Other</option>
+          </select>
+        </div>
 
-            <div class="checkbox-group">
-                <input type="checkbox" required name="agree" id="agree" />
-                <label for="agree">Yes, I agree to all terms of service</label>
-            </div>
+        <div class="checkbox-group">
+          <input type="checkbox" required name="agree" id="agree" />
+          <label for="agree">Yes, I agree to all terms of service</label>
+        </div>
 
-            <button type="submit">Register</button>
-        </form>
+        <button type="submit">Register</button>
+      </form>
     </div>
-</body>
-
+  </body>
 </html>

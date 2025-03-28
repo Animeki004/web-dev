@@ -1,38 +1,107 @@
+/* ==============================
+   Global Styles
+   ============================== */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+
+* {
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Background Color */
 html,
 body {
   background-color: #212121;
   display: flex;
   flex-direction: column;
 }
-/* This for pages */
-.body1 {
-  font-family: Arial, sans-serif;
-  background-color: #1a1a1a;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0;
-}
+
+/* ==============================
+      Header & Logo
+      ============================== */
 header {
-  display: flex;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 15px 30px !important;
 }
+
 #logo {
-  height: 100px;
+  height: 80px;
   width: 300px;
 }
 
-.favicon-img {
-  width: 32px; /* Set width */
-  height: 32px; /* Set height */
+/* ==============================
+      Navigation Menu
+      ============================== */
+.menu {
+  list-style: none;
+  display: flex;
+  gap: 20px;
 }
 
+.menu li {
+  display: inline;
+}
+
+.menu a {
+  text-decoration: none;
+  color: white;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.menu a:hover {
+  color: #ffd700;
+}
+
+/* Mobile Menu Toggle */
+.menu-toggle {
+  display: none;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .menu {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    background: linear-gradient(135deg, #101010, #222222, #444444, #707070);
+    backdrop-filter: blur(10px);
+    opacity: 0.9;
+    width: 100%;
+    padding: 10px;
+    z-index: 100;
+  }
+
+  .menu.active {
+    display: flex;
+  }
+
+  .menu li {
+    text-align: center;
+    padding: 10px;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+}
+
+/* ==============================
+      Typography & General Styles
+      ============================== */
 h1 {
   color: white;
   position: relative;
   text-align: center;
 }
+
 .ph1 {
   margin: 0;
   color: #ffcc00;
@@ -46,11 +115,44 @@ hr {
   width: 90% !important;
 }
 
-/* Container to arrange cards in a row */
+/* ==============================
+      Content & Layout
+      ============================== */
+.body1 {
+  font-family: Arial, sans-serif;
+  background-color: #1a1a1a;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+}
+
+/* Advertisement Box */
+.advertisement {
+  width: 80%;
+  max-width: 900px;
+  background: #333;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  margin: 20px 0;
+  border-radius: 5px;
+}
+
+/* ==============================
+      Cards Section
+      ============================== */
+/* Container for Cards */
 .card-container {
-  display: grid; /* Makes cards align in a row */
-  gap: 20px; /* Space between cards */
-  overflow-x: auto; /* Enables horizontal scrolling if needed */
+  display: grid;
+  gap: 20px;
+  overflow-x: auto;
   padding: 20px;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 }
@@ -66,60 +168,10 @@ hr {
   transition: transform 0.4s ease-in-out;
   color: white;
 }
-/* card <a> tag */
-.card #r1 {
-  color: white;
-  text-decoration: none;
-}
-/* page css */
-.info {
-  margin: 10px 0;
-}
 
-.advertisement {
-  width: 80%;
-  max-width: 900px;
-  background: #333;
-  color: white;
-  text-align: center;
-  padding: 10px;
-  margin: 20px 0;
-  border-radius: 5px;
-}
-.anime-container {
-  display: flex;
-  background: #222;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
-  width: 80%;
-  max-width: 900px;
-  margin-top: 20px;
-}
-
-/* Move details below image on small screens */
-@media (max-width: 768px) {
-  .anime-container {
-    flex-direction: column; /* Stack items vertically */
-    align-items: center; /* Center align */
-  }
-
-  .anime-details {
-    margin-left: 0; /* Remove left margin */
-  }
-  .anime-poster img {
-    width: 300px;
-    border-radius: 10px;
-    height: 400px;
-  }
-}
-.anime-poster img {
-  width: 300px;
-  border-radius: 10px;
-  height: 300px;
-}
-.anime-details {
-  margin-left: 20px;
+/* Card Hover Effect */
+.card:hover {
+  transform: scale(1.05);
 }
 
 /* Card Image */
@@ -134,19 +186,61 @@ hr {
   padding: 15px;
 }
 
-/* Hover Effect */
-.card:hover {
-  transform: scale(1.05);
+/* Card Link */
+.card #r1 {
+  color: white;
+  text-decoration: none;
 }
 
-.main-content {
-  flex: 1; /* Pushes the footer to the bottom */
+/* ==============================
+      Anime Container
+      ============================== */
+.anime-container {
+  display: flex;
+  background: #222;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+  width: 80%;
+  max-width: 900px;
+  margin-top: 20px;
 }
+
+/* Anime Poster */
+.anime-poster img {
+  width: 300px;
+  border-radius: 10px;
+  height: 300px;
+}
+
+/* Anime Details */
+.anime-details {
+  margin-left: 20px;
+}
+
+/* Responsive Anime Container */
+@media (max-width: 768px) {
+  .anime-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .anime-details {
+    margin-left: 0;
+  }
+
+  .anime-poster img {
+    width: 300px;
+    height: 400px;
+  }
+}
+
+/* ==============================
+      Footer
+      ============================== */
 footer {
   background: #111;
   color: white;
-
   text-align: center;
-
   width: 100%;
 }
