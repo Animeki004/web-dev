@@ -1,0 +1,45 @@
+body {
+  background-color: #212121;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+h1,
+h2,
+h3,
+h4 {
+  text-align: center;
+}
+h1 {
+  color: white;
+}
+h3 {
+  color: wheat;
+}
+h4 {
+  color: wheat;
+}
+a {
+  text-decoration: none;
+  color: rgb(0, 255, 0);
+}
+p {
+  color: red;
+  text-align: center;
+  line-height: 30px;
+}
+button {
+  background-color: violet;
+  color: white;
+  border-radius: 5px;
+  padding: 5px;
+  align-content: center;
+}
+textarea {
+  color: #000;
+  background-color: wheat;
+  border-color: rgb(144, 0, 255);
+  border-radius: 5px;
+  border-width: 2px;
+}
+span {
+  text-decoration: underline;
+}

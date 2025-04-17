@@ -2,5 +2,19 @@ body {
   background-color: #212121;
 }
 h1 {
+  color: rgb(89, 89, 218);
+  background-color: gray;
+  text-align: center;
+}
+p {
   color: red;
+  background-color: cornsilk;
+  text-align: justify;
+  text-decoration: black wavy underline;
+  line-height: 1.5;
+  font-family: papyrus;
+}
+button {
+  color: rgb(0, 255, 183);
+  background-color: red;
 }
