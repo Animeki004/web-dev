@@ -280,7 +280,7 @@ body.light-mode .no-reviews {
   overflow: hidden;
   display: flex;
   flex-direction: column-reverse;
-  margin-left: 80px;
+  margin-left: auto;
   flex-shrink: 0;
   position: relative;
   bottom: 40px;
