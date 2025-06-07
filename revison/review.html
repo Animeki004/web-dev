@@ -4,189 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Review Grid - Dark Mode</title>
-    <style>
-      /* Root colors for dark and light modes */
-      :root {
-        --bg-color-dark: #121212;
-        --bg-color-light: #f5f7fa;
-
-        --text-color-dark: #e0e0e0;
-        --text-color-light: #2c3e50;
-
-        --card-bg-dark: #1e1e1e;
-        --card-bg-light: #fff;
-
-        --shadow-dark: rgba(0, 0, 0, 0.7);
-        --shadow-light: rgba(0, 0, 0, 0.08);
-
-        --accent-color: #3498db;
-        --star-color: #f39c12;
-        --email-color-dark: #aaa;
-        --email-color-light: #888;
-      }
-
-      /* Base styles with dark mode default */
-      body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background-color: var(--bg-color-dark);
-        color: var(--text-color-dark);
-        margin: 0;
-        padding: 20px;
-        transition: background-color 0.3s ease, color 0.3s ease;
-        min-height: 100vh;
-      }
-
-      h1 {
-        text-align: center;
-        margin-bottom: 30px;
-        font-weight: 700;
-        letter-spacing: 1px;
-        user-select: none;
-      }
-
-      /* Light mode overrides */
-      body.light-mode {
-        background-color: var(--bg-color-light);
-        color: var(--text-color-light);
-      }
-
-      .grid-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 20px;
-        max-width: 1100px;
-        margin: 0 auto;
-      }
-
-      .card {
-        background-color: var(--card-bg-dark);
-        padding: 22px 24px;
-        border-radius: 14px;
-        box-shadow: 0 6px 15px var(--shadow-dark);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        transition: background-color 0.3s ease, box-shadow 0.3s ease,
-          transform 0.3s ease;
-        cursor: default;
-      }
-
-      body.light-mode .card {
-        background-color: var(--card-bg-light);
-        box-shadow: 0 4px 12px var(--shadow-light);
-      }
-
-      .card:hover {
-        transform: translateY(-5px);
-      }
-
-      .message {
-        font-size: 1em;
-        line-height: 1.45;
-        color: inherit;
-        margin-bottom: 12px;
-        white-space: pre-line;
-      }
-
-      .profile {
-        display: flex;
-        align-items: center;
-        margin-top: 14px;
-      }
-
-      .avatar {
-        width: 44px;
-        height: 44px;
-        background-color: var(--accent-color);
-        border-radius: 50%;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 18px;
-        margin-right: 14px;
-        user-select: none;
-        box-shadow: 0 0 6px var(--accent-color);
-        transition: box-shadow 0.3s ease;
-      }
-
-      .info {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .name {
-        font-weight: 700;
-        color: inherit;
-        user-select: text;
-      }
-
-      .email {
-        font-size: 0.9em;
-        color: var(--email-color-dark);
-        user-select: text;
-      }
-
-      body.light-mode .email {
-        color: var(--email-color-light);
-      }
-
-      .timestamp {
-        font-size: 0.8em;
-        color: #888888;
-        margin-top: 14px;
-        text-align: right;
-        user-select: none;
-        transition: color 0.3s ease;
-      }
-
-      body.light-mode .timestamp {
-        color: #999999;
-      }
-
-      .stars {
-        color: var(--star-color);
-        font-size: 1.3em;
-        margin-top: 6px;
-        user-select: none;
-        letter-spacing: 2px;
-      }
-
-      /* Toggle button container */
-      .toggle-container {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-      }
-
-      /* Toggle button styling */
-      .toggle-button {
-        background-color: var(--card-bg-dark);
-        color: var(--text-color-dark);
-        border: none;
-        padding: 10px 24px;
-        border-radius: 25px;
-        font-size: 1em;
-        cursor: pointer;
-        box-shadow: 0 4px 12px var(--shadow-dark);
-        transition: background-color 0.3s ease, color 0.3s ease,
-          box-shadow 0.3s ease;
-        user-select: none;
-      }
-
-      body.light-mode .toggle-button {
-        background-color: var(--card-bg-light);
-        color: var(--text-color-light);
-        box-shadow: 0 4px 12px var(--shadow-light);
-      }
-
-      .toggle-button:hover {
-        background-color: var(--accent-color);
-        color: white;
-        box-shadow: 0 6px 20px var(--accent-color);
-      }
-    </style>
+    <link rel="stylesheet" href="./style1.css" />
   </head>
   <body>
     <h1>User Reviews</h1>
@@ -200,9 +18,12 @@
         Switch to Light Mode
       </button>
     </div>
+    <!-- Loading / No Reviews Placeholder -->
+
+    <!-- Reviews Grid -->
 
     <div class="grid-container" id="reviews"></div>
-
+    <div id="no-reviews" class="no-reviews"></div>
     <script>
       // Toggle between dark and light mode
       const toggleBtn = document.getElementById("toggleModeBtn");
@@ -255,18 +76,45 @@
 
       async function fetchReviews() {
         const container = document.getElementById("reviews");
-        container.innerText = "Loading reviews...";
+
+        // Add loading class and show loader HTML
+        container.classList.add("loading");
+        container.innerHTML = `
+    <div class="loader" role="status" aria-label="Loading">
+      <div></div><div></div><div></div>
+    </div>
+  `;
+
         try {
           const res = await fetch(
             "https://script.google.com/macros/s/AKfycbw2XDytgN0lkgSTdBIZlPTY_rn-jX2WExMJI5DPyjw3avYF9O8yRtAwRHIKMex8xPaE/exec"
           );
           const { data } = await res.json();
-          container.innerText = ""; // Clear loading
+
+          container.classList.remove("loading");
+          container.innerHTML = ""; // Clear loader
+
+          const emptyContainer = document.getElementById("no-reviews");
 
           if (!data || data.length === 0) {
-            container.innerText = "No reviews yet.";
+            if (emptyContainer) {
+              emptyContainer.innerHTML = `
+      <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+        <path d="M32 4C17.664 4 6 14.745 6 28c0 6.21 3.414 11.86 8.925 15.75L12 56l12.376-7.038A25.196 25.196 0 0 0 32 52c14.336 0 26-10.745 26-24S46.336 4 32 4zM22 26a4 4 0 1 1 8 0 4 4 0 0 1-8 0zm10 0a4 4 0 1 1 8 0 4 4 0 0 1-8 0z"/>
+      </svg>
+      <div>No reviews yet.</div>
+    `;
+              emptyContainer.style.display = "flex";
+            }
+            container.style.display = "none";
             return;
           }
+
+          // If data is available
+          if (emptyContainer) {
+            emptyContainer.remove(); // Completely remove from DOM
+          }
+          container.style.display = "grid";
 
           data.reverse().forEach((item) => {
             if (!item.name || !item.message) return;
@@ -276,24 +124,29 @@
 
             const stars = createStarRating(item.rating || 4);
             const date = item.timestamp ? new Date(item.timestamp) : new Date();
+            const vuHeight = Math.min(Math.max(parseInt(item.chutiya), 0), 100); // Clamp value between 0-100
             const formattedDate = date.toLocaleString();
 
             card.innerHTML = `
-            <div class="message">${escapeHTML(item.message)}</div>
-            <div class="stars">${stars}</div>
-            <div class="profile">
-              <div class="avatar">${getInitials(escapeHTML(item.name))}</div>
-              <div class="info">
-                <div class="name">${escapeHTML(item.name)}</div>
-                <div class="email">${escapeHTML(item.email || "")}</div>
-              </div>
-            </div>
-            <div class="timestamp">${formattedDate}</div>
-          `;
+        <div class="message">${escapeHTML(item.message)}</div>
+        <div class="stars">${stars}</div>
+        <div class="profile">
+          <div class="avatar">${getInitials(escapeHTML(item.name))}</div>
+          <div class="info">
+            <div class="name">${escapeHTML(item.name)}</div>
+            <div class="email">${escapeHTML(item.email || "")}</div>
+          </div>
+          <div class="vu-meter" aria-label="L Gen C level: ${vuHeight}">
+      <div class="vu-fill" style="height: ${vuHeight}%;"></div>
+    </div>
+        </div>
+        <div class="timestamp">${formattedDate}</div>
+      `;
 
             container.appendChild(card);
           });
         } catch (err) {
+          container.classList.remove("loading");
           container.innerText = "Failed to load reviews.";
           console.error(err);
         }

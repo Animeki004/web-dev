@@ -1,0 +1,301 @@
+/* Root colors for dark and light modes */
+:root {
+  --bg-color-dark: #121212;
+  --bg-color-light: #f5f7fa;
+
+  --text-color-dark: #e0e0e0;
+  --text-color-light: #2c3e50;
+
+  --card-bg-dark: #1e1e1e;
+  --card-bg-light: #fff;
+
+  --shadow-dark: rgba(0, 0, 0, 0.7);
+  --shadow-light: rgba(0, 0, 0, 0.08);
+
+  --accent-color: #3498db;
+  --star-color: #f39c12;
+  --email-color-dark: #aaa;
+  --email-color-light: #888;
+}
+
+/* Base styles with dark mode default */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color-dark);
+  color: var(--text-color-dark);
+  margin: 0;
+  padding: 20px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  user-select: none;
+}
+
+/* Light mode overrides */
+body.light-mode {
+  background-color: var(--bg-color-light);
+  color: var(--text-color-light);
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.card {
+  background-color: var(--card-bg-dark);
+  padding: 22px 24px;
+  border-radius: 14px;
+  box-shadow: 0 6px 15px var(--shadow-dark);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease,
+    transform 0.3s ease;
+  cursor: default;
+}
+
+body.light-mode .card {
+  background-color: var(--card-bg-light);
+  box-shadow: 0 4px 12px var(--shadow-light);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.message {
+  font-size: 1em;
+  line-height: 1.45;
+  color: inherit;
+  margin-bottom: 12px;
+  white-space: pre-line;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  margin-top: 14px;
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  background-color: var(--accent-color);
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  margin-right: 14px;
+  user-select: none;
+  box-shadow: 0 0 6px var(--accent-color);
+  transition: box-shadow 0.3s ease;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  font-weight: 700;
+  color: inherit;
+  user-select: text;
+}
+
+.email {
+  font-size: 0.9em;
+  color: var(--email-color-dark);
+  user-select: text;
+}
+
+body.light-mode .email {
+  color: var(--email-color-light);
+}
+
+.timestamp {
+  font-size: 0.8em;
+  color: #888888;
+  margin-top: 14px;
+  text-align: right;
+  user-select: none;
+  transition: color 0.3s ease;
+}
+
+body.light-mode .timestamp {
+  color: #999999;
+}
+
+.stars {
+  color: var(--star-color);
+  font-size: 1.3em;
+  margin-top: 6px;
+  user-select: none;
+  letter-spacing: 2px;
+}
+
+/* Toggle button container */
+.toggle-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+/* Toggle button styling */
+.toggle-button {
+  background-color: var(--card-bg-dark);
+  color: var(--text-color-dark);
+  border: none;
+  padding: 10px 24px;
+  border-radius: 25px;
+  font-size: 1em;
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--shadow-dark);
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+}
+
+body.light-mode .toggle-button {
+  background-color: var(--card-bg-light);
+  color: var(--text-color-light);
+  box-shadow: 0 4px 12px var(--shadow-light);
+}
+
+.toggle-button:hover {
+  background-color: var(--accent-color);
+  color: white;
+  box-shadow: 0 6px 20px var(--accent-color);
+}
+
+/* Center the loader in full viewport */
+#reviews.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px; /* or min-height: 50vh; for vertical centering */
+}
+
+/* Bouncing balls loader */
+.loader {
+  display: flex;
+  gap: 12px;
+}
+
+.loader > div {
+  width: 16px;
+  height: 16px;
+  background-color: var(--accent-color);
+  border-radius: 50%;
+  animation: bounce 0.6s infinite ease-in-out;
+}
+
+.loader > div:nth-child(1) {
+  animation-delay: -0.32s;
+  background-color: #3498db;
+}
+.loader > div:nth-child(2) {
+  animation-delay: -0.16s;
+  background-color: #2980b9;
+}
+.loader > div:nth-child(3) {
+  animation-delay: 0;
+  background-color: #1abc9c;
+}
+
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-20px);
+  }
+}
+/* No reviews container: center content */
+.no-reviews {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 300px !important; /* same height as loader */
+  color: var(--text-color-dark);
+
+  animation: fadeIn 0.6s ease forwards;
+}
+
+body.light-mode .no-reviews {
+  color: var(--text-color-light);
+}
+
+/* Icon animation: pulse scale */
+.no-reviews svg {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 16px;
+  fill: var(--accent-color);
+  animation: pulseScale 1.6s ease-in-out infinite;
+}
+
+/* Pulsing scale animation */
+@keyframes pulseScale {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.7;
+  }
+}
+
+/* Fade-in animation for message container */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.vu-meter {
+  width: 35px;
+  height: 90px;
+  background-color: #333;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column-reverse;
+  margin-left: 80px;
+  flex-shrink: 0;
+  position: relative;
+  bottom: 40px;
+}
+
+.vu-fill {
+  width: 100%;
+  transition: height 0.3s ease;
+  background: linear-gradient(to top, #e74c3c 0%, #f1c40f 50%, #2ecc71 100%);
+  border-radius: 4px 4px 0 0;
+}
+.vu-meter::after {
+  content: attr(aria-label);
+  writing-mode: vertical-rl;
+  font-size: 0.7em;
+  color: #ccc;
+  margin-top: 4px;
+}
