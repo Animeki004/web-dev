@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form action="/server">
+      <h1>Fill the form (Dare)</h1>
+
+      <!--here we use text type -->
+
+      <label for="nm">Name:</label>
+      <input
+        type="text"
+        name="nm"
+        id="nm"
+        placeholder="Enter ur name"
+        required
+      /><br />
+
+      <!--here we use number type -->
+
+      <label for="ph">Phone NO.</label>
+      <input
+        type="number"
+        name="ph"
+        id="ph"
+        placeholder="Enter ur no."
+        required
+      /><br />
+
+      <!--here we use email type -->
+
+      <label for="em">Email:</label>
+      <input
+        type="email"
+        name="em"
+        id="em"
+        placeholder="Enter ur Email"
+        required
+      /><br />
+      <!--here we use radio type -->
+
+      <label>Sex:</label>
+      <label for="sx1">Male</label>
+      <input type="radio" name="sx" id="sx1" value="Male" required />
+      <label for="sx2">Female</label>
+      <input type="radio" name="sx" id="sx2" value="Female" required />
+      <label for="sx3">Bi</label>
+      <input type="radio" name="sx" id="sx3" value="Bi" required />
+
+      <label for="sx4">Lesbian</label>
+      <input type="radio" name="sx" id="sx4" value="Lesbian" required />
+
+      <label for="sx5">Gay</label>
+      <input type="radio" name="sx" id="sx5" value="Gay" required />
+      <label for="sx6">Other</label>
+      <input type="radio" name="sx" id="sx6" value="Other" required /><br />
+      <!--here we use password type -->
+
+      <label for="pw">Password:</label>
+      <input
+        type="password"
+        name="pw"
+        id="pw"
+        placeholder="Enter ur password"
+        required
+      /><br />
+
+      <!--here we use dropdown meanu type -->
+      <label for="age"
+        >age:
+        <select name="age" id="age" required>
+          <option selected disabled value="df">Select ur age</option>
+          <option value="18">18</option>
+          <option value="20">20</option>
+          <option value="22">22</option>
+          <option value="24">24</option>
+        </select></label
+      ><br />
+
+      <!--here we use range type -->
+
+      <label for="c">How much chutiya ur:</label>
+      <input
+        type="range"
+        name="c"
+        id="c"
+        min="0"
+        max="100"
+        step="1"
+        value="0"
+        required
+      /><br />
+
+      <!--here we use tag called textarea type -->
+
+      <label for="msg">what do u think about this L Generation ?</label>
+      <textarea
+        rows="5"
+        cols="30"
+        name="msg"
+        id="msg"
+        placeholder="Enter ur valuable input."
+      ></textarea>
+      <br />
+
+      <!--here we use Date type -->
+
+      <label for="dt">Date:</label>
+      <input type="date" name="dt" id="dt" required /><br />
+
+      <!--here we use color type -->
+
+      <label for="cr">color:</label>
+      <input type="color" name="cr" id="cr" required /><br />
+
+      <!--here we use checkbox type -->
+
+      <label for="tm">are u ready to Rock ?</label>
+      <input
+        type="checkbox"
+        name="tm"
+        id="tm"
+        placeholder="Enter ur password"
+        value="yes"
+        required
+      /><br />
+
+      <!--here we use button& its type type -->
+
+      <button type="submit">Submit</button>
+      <button type="reset">Reset</button>
+    </form>
+  </body>
+</html>
