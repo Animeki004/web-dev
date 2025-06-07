@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Review Grid - Dark Mode</title>
+    <style>
+      /* Root colors for dark and light modes */
+      :root {
+        --bg-color-dark: #121212;
+        --bg-color-light: #f5f7fa;
+
+        --text-color-dark: #e0e0e0;
+        --text-color-light: #2c3e50;
+
+        --card-bg-dark: #1e1e1e;
+        --card-bg-light: #fff;
+
+        --shadow-dark: rgba(0, 0, 0, 0.7);
+        --shadow-light: rgba(0, 0, 0, 0.08);
+
+        --accent-color: #3498db;
+        --star-color: #f39c12;
+        --email-color-dark: #aaa;
+        --email-color-light: #888;
+      }
+
+      /* Base styles with dark mode default */
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg-color-dark);
+        color: var(--text-color-dark);
+        margin: 0;
+        padding: 20px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        min-height: 100vh;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        user-select: none;
+      }
+
+      /* Light mode overrides */
+      body.light-mode {
+        background-color: var(--bg-color-light);
+        color: var(--text-color-light);
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      .card {
+        background-color: var(--card-bg-dark);
+        padding: 22px 24px;
+        border-radius: 14px;
+        box-shadow: 0 6px 15px var(--shadow-dark);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease,
+          transform 0.3s ease;
+        cursor: default;
+      }
+
+      body.light-mode .card {
+        background-color: var(--card-bg-light);
+        box-shadow: 0 4px 12px var(--shadow-light);
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .message {
+        font-size: 1em;
+        line-height: 1.45;
+        color: inherit;
+        margin-bottom: 12px;
+        white-space: pre-line;
+      }
+
+      .profile {
+        display: flex;
+        align-items: center;
+        margin-top: 14px;
+      }
+
+      .avatar {
+        width: 44px;
+        height: 44px;
+        background-color: var(--accent-color);
+        border-radius: 50%;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 18px;
+        margin-right: 14px;
+        user-select: none;
+        box-shadow: 0 0 6px var(--accent-color);
+        transition: box-shadow 0.3s ease;
+      }
+
+      .info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .name {
+        font-weight: 700;
+        color: inherit;
+        user-select: text;
+      }
+
+      .email {
+        font-size: 0.9em;
+        color: var(--email-color-dark);
+        user-select: text;
+      }
+
+      body.light-mode .email {
+        color: var(--email-color-light);
+      }
+
+      .timestamp {
+        font-size: 0.8em;
+        color: #888888;
+        margin-top: 14px;
+        text-align: right;
+        user-select: none;
+        transition: color 0.3s ease;
+      }
+
+      body.light-mode .timestamp {
+        color: #999999;
+      }
+
+      .stars {
+        color: var(--star-color);
+        font-size: 1.3em;
+        margin-top: 6px;
+        user-select: none;
+        letter-spacing: 2px;
+      }
+
+      /* Toggle button container */
+      .toggle-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      /* Toggle button styling */
+      .toggle-button {
+        background-color: var(--card-bg-dark);
+        color: var(--text-color-dark);
+        border: none;
+        padding: 10px 24px;
+        border-radius: 25px;
+        font-size: 1em;
+        cursor: pointer;
+        box-shadow: 0 4px 12px var(--shadow-dark);
+        transition: background-color 0.3s ease, color 0.3s ease,
+          box-shadow 0.3s ease;
+        user-select: none;
+      }
+
+      body.light-mode .toggle-button {
+        background-color: var(--card-bg-light);
+        color: var(--text-color-light);
+        box-shadow: 0 4px 12px var(--shadow-light);
+      }
+
+      .toggle-button:hover {
+        background-color: var(--accent-color);
+        color: white;
+        box-shadow: 0 6px 20px var(--accent-color);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>User Reviews</h1>
+
+    <div class="toggle-container">
+      <button
+        class="toggle-button"
+        id="toggleModeBtn"
+        aria-label="Toggle Light/Dark Mode"
+      >
+        Switch to Light Mode
+      </button>
+    </div>
+
+    <div class="grid-container" id="reviews"></div>
+
+    <script>
+      // Toggle between dark and light mode
+      const toggleBtn = document.getElementById("toggleModeBtn");
+      const body = document.body;
+
+      function updateToggleButtonText() {
+        if (body.classList.contains("light-mode")) {
+          toggleBtn.textContent = "Switch to Dark Mode";
+        } else {
+          toggleBtn.textContent = "Switch to Light Mode";
+        }
+      }
+
+      toggleBtn.addEventListener("click", () => {
+        body.classList.toggle("light-mode");
+        updateToggleButtonText();
+      });
+
+      updateToggleButtonText();
+
+      // Helpers
+      function getInitials(name) {
+        if (!name) return "U";
+        return name
+          .split(" ")
+          .map((part) => part[0])
+          .join("")
+          .toUpperCase()
+          .slice(0, 2);
+      }
+
+      function createStarRating(starCount = 4) {
+        return "★".repeat(starCount) + "☆".repeat(5 - starCount);
+      }
+
+      // Escape HTML for safety
+      function escapeHTML(str) {
+        return String(str).replace(
+          /[&<>"']/g,
+          (m) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            }[m])
+        );
+      }
+
+      async function fetchReviews() {
+        const container = document.getElementById("reviews");
+        container.innerText = "Loading reviews...";
+        try {
+          const res = await fetch(
+            "https://script.google.com/macros/s/AKfycbw2XDytgN0lkgSTdBIZlPTY_rn-jX2WExMJI5DPyjw3avYF9O8yRtAwRHIKMex8xPaE/exec"
+          );
+          const { data } = await res.json();
+          container.innerText = ""; // Clear loading
+
+          if (!data || data.length === 0) {
+            container.innerText = "No reviews yet.";
+            return;
+          }
+
+          data.reverse().forEach((item) => {
+            if (!item.name || !item.message) return;
+
+            const card = document.createElement("div");
+            card.className = "card";
+
+            const stars = createStarRating(item.rating || 4);
+            const date = item.timestamp ? new Date(item.timestamp) : new Date();
+            const formattedDate = date.toLocaleString();
+
+            card.innerHTML = `
+            <div class="message">${escapeHTML(item.message)}</div>
+            <div class="stars">${stars}</div>
+            <div class="profile">
+              <div class="avatar">${getInitials(escapeHTML(item.name))}</div>
+              <div class="info">
+                <div class="name">${escapeHTML(item.name)}</div>
+                <div class="email">${escapeHTML(item.email || "")}</div>
+              </div>
+            </div>
+            <div class="timestamp">${formattedDate}</div>
+          `;
+
+            container.appendChild(card);
+          });
+        } catch (err) {
+          container.innerText = "Failed to load reviews.";
+          console.error(err);
+        }
+      }
+
+      fetchReviews();
+    </script>
+  </body>
+</html>

@@ -43,33 +43,33 @@
       <h1 class="form-title">Fill the form (Dare)</h1>
       <form id="submit-to-google-sheet" class="container">
         <div class="input-group">
-          <label for="nm">Name:</label>
+          <label for="name">Name:</label>
           <input
             type="text"
-            name="nm"
-            id="nm"
+            name="name"
+            id="name"
             placeholder="Enter your name"
             required
           />
         </div>
 
         <div class="input-group">
-          <label for="ph">Phone No.:</label>
+          <label for="phone">Phone No.:</label>
           <input
             type="number"
-            name="ph"
-            id="ph"
+            name="phone"
+            id="phone"
             placeholder="Enter your phone number"
             required
           />
         </div>
 
         <div class="input-group">
-          <label for="em">Email:</label>
+          <label for="email">Email:</label>
           <input
             type="email"
-            name="em"
-            id="em"
+            name="email"
+            id="email"
             placeholder="Enter your email"
             required
           />
@@ -79,36 +79,38 @@
           <label>Sex:</label>
           <div class="radio-group">
             <label
-              ><input type="radio" name="sx" value="Male" required />
+              ><input type="radio" name="gender" value="Male" required />
               Male</label
             >
             <label
-              ><input type="radio" name="sx" value="Female" required />
+              ><input type="radio" name="gender" value="Female" required />
               Female</label
             >
             <label
-              ><input type="radio" name="sx" value="Bi" required /> Bi</label
+              ><input type="radio" name="gender" value="Bi" required />
+              Bi</label
             >
             <label
-              ><input type="radio" name="sx" value="Lesbian" required />
+              ><input type="radio" name="gender" value="Lesbian" required />
               Lesbian</label
             >
             <label
-              ><input type="radio" name="sx" value="Gay" required /> Gay</label
+              ><input type="radio" name="gender" value="Gay" required />
+              Gay</label
             >
             <label
-              ><input type="radio" name="sx" value="Other" required />
+              ><input type="radio" name="gender" value="Other" required />
               Other</label
             >
           </div>
         </div>
 
         <div class="input-group">
-          <label for="pw">Password:</label>
+          <label for="password">Password:</label>
           <input
             type="password"
-            name="pw"
-            id="pw"
+            name="password"
+            id="password"
             placeholder="Enter your password"
             required
           />
@@ -126,11 +128,11 @@
         </div>
 
         <div class="input-group">
-          <label for="c">How much chutiya ur:</label>
+          <label for="chutiya">How much chutiya ur:</label>
           <input
             type="range"
-            name="c"
-            id="c"
+            name="chutiya"
+            id="chutiya"
             min="0"
             max="100"
             step="1"
@@ -140,49 +142,65 @@
         </div>
 
         <div class="input-group">
-          <label for="msg">What do you think about this L Generation?</label>
+          <label for="message"
+            >What do you think about this L Generation?</label
+          >
           <textarea
             rows="5"
             cols="30"
-            name="msg"
-            id="msg"
+            name="message"
+            id="message"
             placeholder="Enter your valuable input."
           ></textarea>
         </div>
 
         <div class="input-group">
-          <label for="dt">Date:</label>
-          <input type="date" name="dt" id="dt" required />
+          <label for="date">Date:</label>
+          <input type="date" name="date" id="date" required />
         </div>
 
         <div class="input-group">
-          <label for="cr">Color:</label>
-          <input type="color" name="cr" id="cr" required />
+          <label for="color">Color:</label>
+          <input type="color" name="color" id="color" required />
         </div>
 
         <div class="input-group">
-          <label for="tm">Are you ready to rock?</label>
-          <input type="checkbox" name="tm" id="tm" value="yes" required />
+          <label for="rock">Are you ready to rock?</label>
+          <input type="checkbox" name="rock" id="rock" value="yes" required />
         </div>
 
         <button type="submit">Submit</button>
         <button type="reset">Reset</button>
       </form>
     </div>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
       const scriptURL =
-        "https://script.google.com/macros/s/AKfycbzGONFuRvjAUWVscBC807gVtb3OQfhEvUNkSgPGBwH0ZxfBDISOv9kG1gRA0XzPPxFN/exec";
+        "https://script.google.com/macros/s/AKfycbw2XDytgN0lkgSTdBIZlPTY_rn-jX2WExMJI5DPyjw3avYF9O8yRtAwRHIKMex8xPaE/exec";
       const form = document.forms["submit-to-google-sheet"];
+
       form.addEventListener("submit", (e) => {
         e.preventDefault();
         var formData = new FormData(form);
 
         fetch(scriptURL, { method: "POST", body: formData })
           .then((response) => {
-            swal("Done", "Submitted Successfully.", "success");
+            swal("Done", "Submitted Successfully.", "success").then(() => {
+              // Show second popup
+              swal({
+                title: "Wanna see what others wrote?",
+                text: "You can check out reviews and opinions!",
+                icon: "info",
+                buttons: ["Nope", "Yes!"],
+              }).then((willGo) => {
+                if (willGo) {
+                  window.location.href = "review.html"; // Redirect if user clicks "Yes"
+                }
+              });
+            });
           })
           .catch((error) => {
-            swal("Error", "Something went wrong. please try again!", "error");
+            swal("Error", "Something went wrong. Please try again!", "error");
           });
       });
     </script>
