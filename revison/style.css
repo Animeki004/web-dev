@@ -1,0 +1,162 @@
+/* Import Google Font */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.form-title {
+  z-index: 100;
+  padding: 20px;
+  font-size: 28px;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+
+  width: 800px; /* match container */
+}
+
+/* Centering the Form */
+.body3 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100dvh;
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  overflow: hidden;
+}
+
+input[type="checkbox"] {
+  width: 50px; /* Optional: control base size */
+  height: 20px; /* Optional: control base size */
+  transform: scale(1.8); /* Increase size */
+  accent-color: #6e8efb; /* Optional: color match your theme */
+  cursor: pointer;
+  margin-right: 8px;
+  /* spacing from label */
+}
+
+input[type="range"] {
+  padding: 0%;
+}
+
+/* Form Container */
+.container {
+  top: 2px;
+  background: white;
+  padding: 30px;
+  border-radius: 20px; /* rounded corners */
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  width: 800px; /* increase width */
+  max-height: 90vh;
+  overflow: auto; /* hide overflow and scrollbar */
+  text-align: center;
+  position: relative; /* Needed for sticky to work inside it */
+}
+
+/* For WebKit-based browsers (Chrome, Safari, Edge) */
+.container::-webkit-scrollbar {
+  width: 6px; /* Thin scrollbar */
+}
+
+.container::-webkit-scrollbar-track {
+  background: transparent; /* No background */
+}
+
+.container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Faint black */
+  border-radius: 10px;
+  border: none;
+}
+
+/* Optional: On hover, make it more visible */
+.container:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Heading */
+
+/* Input Groups */
+.input-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.input-group label {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Input Fields */
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+  transition: 0.3s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #6e8efb;
+}
+
+/* Radio Group */
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.radio-group label {
+  margin: 0;
+  font-weight: normal;
+}
+
+.radio-group input {
+  width: auto;
+}
+
+/* Submit Button */
+button {
+  width: 48%;
+  margin-top: 10px;
+  padding: 12px;
+  background: #6e8efb;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #5b7bef;
+}
+
+button[type="reset"] {
+  background: #ccc;
+  color: #333;
+}
+
+button[type="reset"]:hover {
+  background: #bbb;
+}
