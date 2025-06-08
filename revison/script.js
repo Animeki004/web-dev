@@ -342,6 +342,82 @@ function loadReviews() {
           VNM: "Vietnam",
         };
 
+        function copyComputedStylesDeep(sourceElem, targetElem) {
+          if (!sourceElem || !targetElem) return;
+
+          const computedStyle = window.getComputedStyle(sourceElem);
+          for (let key of computedStyle) {
+            try {
+              targetElem.style.setProperty(
+                key,
+                computedStyle.getPropertyValue(key),
+                computedStyle.getPropertyPriority(key)
+              );
+            } catch (e) {}
+          }
+
+          const sourceChildren = sourceElem.children;
+          const targetChildren = targetElem.children;
+
+          for (let i = 0; i < sourceChildren.length; i++) {
+            copyComputedStylesDeep(sourceChildren[i], targetChildren[i]);
+          }
+        }
+
+        document.querySelectorAll(".card").forEach((card) => {
+          card.style.cursor = "pointer";
+
+          card.addEventListener("click", (event) => {
+            const isBigScreen = window.innerWidth >= 768;
+            const isMouseDevice = window.matchMedia("(pointer: fine)").matches;
+
+            // 🛑 Skip if device is mobile or touch-based
+            if (!isBigScreen || !isMouseDevice) return;
+
+            // 🛑 Skip if click was directly on .blurred-word or inside it
+            if (event.target.closest(".blurred-word")) return;
+
+            // 🛑 Skip if overlay already exists
+            if (document.querySelector(".modal-overlay")) return;
+
+            // ✅ Proceed with zoom
+            const overlay = document.createElement("div");
+            overlay.classList.add("modal-overlay");
+
+            const zoomContainer = document.createElement("div");
+            zoomContainer.classList.add("modal-zoomed-card");
+
+            const clonedCard = card.cloneNode(true);
+            zoomContainer.appendChild(clonedCard);
+
+            copyComputedStylesDeep(card, clonedCard);
+
+            const closeBtn = document.createElement("button");
+            closeBtn.classList.add("modal-close-btn");
+            closeBtn.setAttribute("aria-label", "Close zoomed card");
+            closeBtn.innerHTML = "&times;";
+            zoomContainer.appendChild(closeBtn);
+
+            overlay.appendChild(zoomContainer);
+            document.body.appendChild(overlay);
+            document.body.style.overflow = "hidden";
+
+            function closeModal() {
+              overlay.remove();
+              document.body.style.overflow = "";
+            }
+
+            overlay.addEventListener("click", (e) => {
+              if (e.target === overlay) closeModal();
+            });
+
+            closeBtn.addEventListener("click", closeModal);
+            window.addEventListener("keydown", (e) => {
+              if (e.key === "Escape") closeModal();
+            });
+          });
+        });
+
         const fullCountry = countryMap[item.country] || item.country;
         const countryCode = item.country || "UNK"; // fallback to UNK = Unknown
         card.innerHTML = `
