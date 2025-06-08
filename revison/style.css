@@ -209,3 +209,151 @@ button[type="reset"]:hover {
 input[type="range"] {
   padding: 0%;
 }
+
+/* --- Your existing styles above --- */
+
+/* Dark Mode Styles */
+body.dark-mode,
+.body3.dark-mode {
+  background: linear-gradient(135deg, #222831, #393e46);
+  color: #eee;
+}
+
+body.dark-mode .form-title,
+.body3.dark-mode .form-title {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ddd;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .container,
+.body3.dark-mode .container {
+  background: #1e1e1e;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.9);
+  color: #ddd;
+}
+
+/* Input Groups Label */
+body.dark-mode .input-group label,
+.body3.dark-mode .input-group label {
+  color: #ccc;
+}
+
+/* Inputs, selects, textarea */
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea,
+.body3.dark-mode input,
+.body3.dark-mode select,
+.body3.dark-mode textarea {
+  background: #121212;
+  border: 2px solid #444;
+  color: #eee;
+  transition: 0.3s;
+}
+
+body.dark-mode input:focus,
+body.dark-mode select:focus,
+body.dark-mode textarea:focus,
+.body3.dark-mode input:focus,
+.body3.dark-mode select:focus,
+.body3.dark-mode textarea:focus {
+  border-color: #6e8efb;
+  background: #222831;
+  color: #fff;
+}
+
+/* Checkbox */
+body.dark-mode input[type="checkbox"],
+.body3.dark-mode input[type="checkbox"] {
+  accent-color: #6e8efb;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+/* Radio Group */
+body.dark-mode .radio-group label,
+.body3.dark-mode .radio-group label {
+  color: #ccc;
+}
+body.dark-mode .radio-group input,
+.body3.dark-mode .radio-group input {
+  cursor: pointer;
+}
+
+/* Buttons */
+body.dark-mode button,
+.body3.dark-mode button {
+  background: #6e8efb;
+  color: white;
+  transition: 0.3s;
+}
+body.dark-mode button:hover,
+.body3.dark-mode button:hover {
+  background: #5b7bef;
+}
+
+body.dark-mode button[type="reset"],
+.body3.dark-mode button[type="reset"] {
+  background: #333;
+  color: #ddd;
+}
+body.dark-mode button[type="reset"]:hover,
+.body3.dark-mode button[type="reset"]:hover {
+  background: #444;
+}
+
+/* Scrollbar */
+body.dark-mode .container::-webkit-scrollbar,
+.body3.dark-mode .container::-webkit-scrollbar {
+  width: 6px;
+}
+body.dark-mode .container::-webkit-scrollbar-track,
+.body3.dark-mode .container::-webkit-scrollbar-track {
+  background: transparent;
+}
+body.dark-mode .container::-webkit-scrollbar-thumb,
+.body3.dark-mode .container::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+body.dark-mode .container:hover::-webkit-scrollbar-thumb,
+.body3.dark-mode .container:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Tooltip */
+body.dark-mode .tooltip .tooltiptext,
+.body3.dark-mode .tooltip .tooltiptext {
+  background-color: #eee;
+  color: #111;
+}
+
+/* Range input */
+body.dark-mode input[type="range"],
+.body3.dark-mode input[type="range"] {
+  background: transparent;
+  margin-top: 5px;
+}
+.toggle-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #6e8efb;
+  color: white;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  font-size: 24px;
+  line-height: 45px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 4px 12px rgba(110, 142, 251, 0.6);
+  transition: background 0.3s;
+  z-index: 9999;
+}
+
+.toggle-button:hover {
+  background: #5b7bef;
+}

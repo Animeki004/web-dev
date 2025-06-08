@@ -12,8 +12,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ---------- FORM PAGE LOGIC ----------
 function setupFormSubmission() {
+  const toggleBtn = document.getElementById("darkModeToggle");
+
+  function applyDarkMode(isDark) {
+    if (isDark) {
+      document.body.classList.add("dark-mode");
+      toggleBtn.textContent = "☀️"; // Sun icon
+    } else {
+      document.body.classList.remove("dark-mode");
+      toggleBtn.textContent = "🌙"; // Moon icon
+    }
+  }
+
+  // On page load, read localStorage and apply
+  const darkModeStored = localStorage.getItem("darkMode");
+  const isDarkMode = darkModeStored === "true";
+  applyDarkMode(isDarkMode);
+
+  // On button click, toggle mode and save preference
+  toggleBtn.addEventListener("click", () => {
+    const darkModeActive = document.body.classList.toggle("dark-mode");
+    localStorage.setItem("darkMode", darkModeActive);
+    applyDarkMode(darkModeActive);
+  });
+
   const scriptURL =
-    "https://script.google.com/macros/s/AKfycbxJZUhKCnkQI9MBehUf9U5DM5jJiaSB_245EEOzizPdc0xDLDYcfr6rFDAV2w7DnvkI/exec";
+    "https://script.google.com/macros/s/AKfycbzCpWSGGbWDis_dDF6xGkcmXsiiAAlFvGUynFcUINEGa6_4Y1zIw091GZenkzkuRu_7/exec";
   const form = document.forms["submit-to-google-sheet"];
   const submitBtn = form.querySelector('button[type="submit"]');
   const resetBtn = form.querySelector('button[type="reset"]'); // Reset button
@@ -110,20 +134,104 @@ function loadReviews() {
   }
 
   // Replace abusive words with blurred clickable spans
+  // Utility: Levenshtein distance implementation
+  function levenshteinDistance(a, b) {
+    const matrix = [];
+    const lenA = a.length;
+    const lenB = b.length;
+
+    for (let i = 0; i <= lenB; i++) {
+      matrix[i] = [i];
+    }
+    for (let j = 0; j <= lenA; j++) {
+      matrix[0][j] = j;
+    }
+
+    for (let i = 1; i <= lenB; i++) {
+      for (let j = 1; j <= lenA; j++) {
+        if (b.charAt(i - 1).toLowerCase() === a.charAt(j - 1).toLowerCase()) {
+          matrix[i][j] = matrix[i - 1][j - 1];
+        } else {
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j] + 1, // deletion
+            matrix[i][j - 1] + 1, // insertion
+            matrix[i - 1][j - 1] + 1 // substitution
+          );
+        }
+      }
+    }
+
+    return matrix[lenB][lenA];
+  }
+
+  // Utility: Calculate similarity percentage between two strings
+  function similarity(a, b) {
+    const dist = levenshteinDistance(a, b);
+    const maxLen = Math.max(a.length, b.length);
+    return ((maxLen - dist) / maxLen) * 100;
+  }
+
+  // Main censoring function with fuzzy matching
   function censorAbusiveWords(text) {
-    // Sort words by length desc to avoid partial replacement issues
-    abusiveWords.sort((a, b) => b.length - a.length);
+    abusiveWords.sort((a, b) => b.length - a.length); // longest first
 
-    abusiveWords.forEach((word) => {
-      // Create regex with word boundaries and case-insensitive
-      const pattern = new RegExp(`\\b${word.replace(/\*/g, "\\*")}\\b`, "gi");
+    let censoredText = text;
 
-      text = text.replace(pattern, (matched) => {
+    // Clean and tokenize input text for fuzzy matching
+    const textLower = text.toLowerCase();
+
+    abusiveWords.forEach((abuse) => {
+      const abuseLower = abuse.toLowerCase();
+
+      // Build regex pattern to catch exact + symbol-separated matches
+      const abuseClean = abuseLower
+        .replace(/\s+/g, "\\s+")
+        .replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+      const abusePattern = abuseClean.replace(/\s+/g, "\\s*[\\W_]*\\s*");
+      const regex = new RegExp(`\\b${abusePattern}\\b`, "gi");
+
+      // First do exact/symbol tolerant replacement
+      censoredText = censoredText.replace(regex, (matched) => {
         return `<span class="blurred-word" tabindex="0" role="button" aria-label="Abusive word blurred. Click to confirm age.">${matched}</span>`;
       });
+
+      // Now fuzzy matching:
+      // Break text into tokens (words), sliding windows for multi-word abuse
+      const abuseTokens = abuseLower.split(/\s+/);
+      const tokens = textLower.split(/\s+/);
+
+      for (let i = 0; i <= tokens.length - abuseTokens.length; i++) {
+        // Build candidate phrase of the same length as abuseTokens
+        const candidate = tokens.slice(i, i + abuseTokens.length).join(" ");
+
+        // Calculate similarity between candidate and abusive phrase
+        const sim = similarity(candidate, abuseLower);
+
+        if (sim >= 80 && sim < 100) {
+          // Replace original text substring with blurred span in censoredText
+
+          // Find original substring (case sensitive) from original text using regex
+          // Build regex to locate this candidate phrase in original text (case-insensitive)
+          // To avoid complex substring index issues, just replace first occurrence safely:
+
+          // Escape special chars in candidate for regex
+          const candidateRegexSafe = candidate.replace(
+            /[-\/\\^$*+?.()|[\]{}]/g,
+            "\\$&"
+          );
+          const candidateRegex = new RegExp(`\\b${candidateRegexSafe}\\b`, "i");
+
+          censoredText = censoredText.replace(candidateRegex, (matched) => {
+            // If already blurred (avoid double blur), skip
+            if (matched.includes("blurred-word")) return matched;
+
+            return `<span class="blurred-word" tabindex="0" role="button" aria-label="Abusive word blurred. Click to confirm age.">${matched}</span>`;
+          });
+        }
+      }
     });
 
-    return text;
+    return censoredText;
   }
 
   // Function to create star rating (your existing)
@@ -153,7 +261,7 @@ function loadReviews() {
 
     try {
       const res = await fetch(
-        "https://script.google.com/macros/s/AKfycbw2XDytgN0lkgSTdBIZlPTY_rn-jX2WExMJI5DPyjw3avYF9O8yRtAwRHIKMex8xPaE/exec"
+        "https://script.google.com/macros/s/AKfycbzCpWSGGbWDis_dDF6xGkcmXsiiAAlFvGUynFcUINEGa6_4Y1zIw091GZenkzkuRu_7/exec"
       );
       const { data } = await res.json();
 
@@ -193,7 +301,68 @@ function loadReviews() {
         // Escape message, then replace abusive words with blurred spans
         let safeMessage = escapeHTML(item.message);
         safeMessage = censorAbusiveWords(safeMessage);
+        // Determine gender class
+        const genderText = (item.gender || "").trim().toLowerCase();
+        const isRGBGender = ["lesbian", "gay", "bi"].includes(genderText);
+        const genderClass = isRGBGender ? "gender rgb" : "gender";
+        const countryMap = {
+          AFG: "Afghanistan",
+          ALB: "Albania",
+          DZA: "Algeria",
+          AND: "Andorra",
+          AGO: "Angola",
+          ARG: "Argentina",
+          ARM: "Armenia",
+          AUS: "Australia",
+          AUT: "Austria",
+          AZE: "Azerbaijan",
+          BGD: "Bangladesh",
+          BLR: "Belarus",
+          BEL: "Belgium",
+          BRA: "Brazil",
+          CAN: "Canada",
+          CHN: "China",
+          COL: "Colombia",
+          EGY: "Egypt",
+          FRA: "France",
+          DEU: "Germany",
+          GRC: "Greece",
+          HKG: "Hong Kong",
+          IND: "India",
+          IDN: "Indonesia",
+          IRN: "Iran",
+          IRQ: "Iraq",
+          IRL: "Ireland",
+          ISR: "Israel",
+          ITA: "Italy",
+          JPN: "Japan",
+          KEN: "Kenya",
+          MEX: "Mexico",
+          NLD: "Netherlands",
+          NZL: "New Zealand",
+          NGA: "Nigeria",
+          NOR: "Norway",
+          PAK: "Pakistan",
+          POL: "Poland",
+          PRT: "Portugal",
+          RUS: "Russia",
+          SAU: "Saudi Arabia",
+          SGP: "Singapore",
+          ZAF: "South Africa",
+          KOR: "South Korea",
+          ESP: "Spain",
+          SWE: "Sweden",
+          CHE: "Switzerland",
+          THA: "Thailand",
+          TUR: "Turkey",
+          UKR: "Ukraine",
+          GBR: "United Kingdom",
+          USA: "United States",
+          VNM: "Vietnam",
+        };
 
+        const fullCountry = countryMap[item.country] || item.country;
+        const countryCode = item.country || "UNK"; // fallback to UNK = Unknown
         card.innerHTML = `
             <div class="message">${safeMessage}</div>
             <div class="stars">${stars}</div>
@@ -201,7 +370,16 @@ function loadReviews() {
                 <div class="avatar">${getInitials(escapeHTML(item.name))}</div>
                 <div class="info">
                 <div class="name">${escapeHTML(item.name)}</div>
+                
                 <div class="email">${escapeHTML(item.email || "")}</div>
+                <div class="country flag-${countryCode}">${escapeHTML(
+          fullCountry
+        )}</div>
+
+                <div class="${genderClass}">${escapeHTML(
+          item.gender || ""
+        )}</div>
+
                 </div>
                 <div class="vu-meter" aria-label="L Gen C level: ${vuHeight}">
                 <div class="vu-fill" style="height: ${vuHeight}%;"></div>
@@ -230,6 +408,14 @@ function loadReviews() {
       // Ask once per session
       document.querySelectorAll(".blurred-word").forEach((span) => {
         span.addEventListener("click", () => {
+          // Check if already confirmed
+          if (sessionStorage.getItem("isAdultConfirmed") === "yes") {
+            // Already confirmed, reveal immediately (if not already)
+            revealAllCensored();
+            return; // Skip popup
+          }
+
+          // Else ask popup
           swal({
             title: "Are you 18 or older?",
             text: "This content may be sensitive.",

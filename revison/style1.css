@@ -16,6 +16,14 @@
   --star-color: #f39c12;
   --email-color-dark: #aaa;
   --email-color-light: #888;
+  --gender-color-dark: #d4d4d4;
+  --gender-color-light: #696565;
+  --country-color-dark: #d4d4d4;
+  --country-color-light: #696565;
+  --vu-meter-color-dark: #333;
+  --vu-meter-color-light: #e5d3d3;
+  --vu-meter-after-color-dark: #ccc;
+  --vu-meter-after-color-light: #333;
 }
 
 /* Base styles with dark mode default */
@@ -113,6 +121,55 @@ body.light-mode .card {
   font-weight: 700;
   color: inherit;
   user-select: text;
+}
+@keyframes rgbBlink {
+  0% {
+    color: red;
+    text-shadow: 0 0 5px red;
+  }
+  16% {
+    color: orange;
+    text-shadow: 0 0 5px orange;
+  }
+  33% {
+    color: yellow;
+    text-shadow: 0 0 5px yellow;
+  }
+  50% {
+    color: green;
+    text-shadow: 0 0 5px green;
+  }
+  66% {
+    color: rgb(73, 73, 215);
+    text-shadow: 0 0 5px rgb(73, 73, 193);
+  }
+  83% {
+    color: indigo;
+    text-shadow: 0 0 5px indigo;
+  }
+  100% {
+    color: violet;
+    text-shadow: 0 0 5px violet;
+  }
+}
+
+.gender {
+  font-size: 0.9em;
+  color: var(--gender-color-dark);
+  margin-top: 2px;
+  font-style: italic;
+}
+body.light-mode .gender {
+  color: var(--gender-color-light);
+}
+
+.gender.rgb {
+  animation: rgbBlink 3s infinite;
+  font-weight: bold;
+}
+.gender.rgb::before {
+  content: "🏳️‍🌈";
+  font-size: 1em;
 }
 
 .email {
@@ -275,7 +332,7 @@ body.light-mode .no-reviews {
 .vu-meter {
   width: 60px;
   height: 90px;
-  background-color: #333;
+  background-color: var(--vu-meter-color-dark);
   border-radius: 5px;
   overflow: hidden;
   display: flex;
@@ -284,6 +341,9 @@ body.light-mode .no-reviews {
   flex-shrink: 0;
   position: relative;
   bottom: 40px;
+}
+body.light-mode .vu-meter {
+  background-color: var(--vu-meter-color-light);
 }
 
 .vu-fill {
@@ -296,10 +356,188 @@ body.light-mode .no-reviews {
   content: attr(aria-label);
   /* writing-mode: vertical-rl; */
   font-size: 0.7em;
-  color: #ccc;
+  color: var(--vu-meter-after-color-dark);
   margin-left: 4px;
+}
+body.light-mode .vu-meter::after {
+  color: var(--vu-meter-after-color-light);
 }
 .blurred-word {
   transition: filter 0.3s ease;
   user-select: none;
+}
+
+.country {
+  font-size: 0.9em;
+  color: var(--country-color-dark);
+  margin-top: 2px;
+  font-style: italic;
+}
+body.light-mode .country {
+  color: var(--country-color-light);
+}
+.country::before {
+  content: "";
+  font-size: 1em;
+  padding: 5px;
+}
+/* Flag emojis by country code */
+.flag-AFG::before {
+  content: "🇦🇫";
+}
+.flag-ALB::before {
+  content: "🇦🇱";
+}
+.flag-DZA::before {
+  content: "🇩🇿";
+}
+.flag-AND::before {
+  content: "🇦🇩";
+}
+.flag-AGO::before {
+  content: "🇦🇴";
+}
+.flag-ARG::before {
+  content: "🇦🇷";
+}
+.flag-ARM::before {
+  content: "🇦🇲";
+}
+.flag-AUS::before {
+  content: "🇦🇺";
+}
+.flag-AUT::before {
+  content: "🇦🇹";
+}
+.flag-AZE::before {
+  content: "🇦🇿";
+}
+.flag-BGD::before {
+  content: "🇧🇩";
+}
+.flag-BLR::before {
+  content: "🇧🇾";
+}
+.flag-BEL::before {
+  content: "🇧🇪";
+}
+.flag-BRA::before {
+  content: "🇧🇷";
+}
+.flag-CAN::before {
+  content: "🇨🇦";
+}
+.flag-CHN::before {
+  content: "🇨🇳";
+}
+.flag-COL::before {
+  content: "🇨🇴";
+}
+.flag-EGY::before {
+  content: "🇪🇬";
+}
+.flag-FRA::before {
+  content: "🇫🇷";
+}
+.flag-DEU::before {
+  content: "🇩🇪";
+}
+.flag-GRC::before {
+  content: "🇬🇷";
+}
+.flag-HKG::before {
+  content: "🇭🇰";
+}
+.flag-IND::before {
+  content: "🇮🇳";
+}
+.flag-IDN::before {
+  content: "🇮🇩";
+}
+.flag-IRN::before {
+  content: "🇮🇷";
+}
+.flag-IRQ::before {
+  content: "🇮🇶";
+}
+.flag-IRL::before {
+  content: "🇮🇪";
+}
+.flag-ISR::before {
+  content: "🇮🇱";
+}
+.flag-ITA::before {
+  content: "🇮🇹";
+}
+.flag-JPN::before {
+  content: "🇯🇵";
+}
+.flag-KEN::before {
+  content: "🇰🇪";
+}
+.flag-MEX::before {
+  content: "🇲🇽";
+}
+.flag-NLD::before {
+  content: "🇳🇱";
+}
+.flag-NZL::before {
+  content: "🇳🇿";
+}
+.flag-NGA::before {
+  content: "🇳🇬";
+}
+.flag-NOR::before {
+  content: "🇳🇴";
+}
+.flag-PAK::before {
+  content: "🇵🇰";
+}
+.flag-POL::before {
+  content: "🇵🇱";
+}
+.flag-PRT::before {
+  content: "🇵🇹";
+}
+.flag-RUS::before {
+  content: "🇷🇺";
+}
+.flag-SAU::before {
+  content: "🇸🇦";
+}
+.flag-SGP::before {
+  content: "🇸🇬";
+}
+.flag-ZAF::before {
+  content: "🇿🇦";
+}
+.flag-KOR::before {
+  content: "🇰🇷";
+}
+.flag-ESP::before {
+  content: "🇪🇸";
+}
+.flag-SWE::before {
+  content: "🇸🇪";
+}
+.flag-CHE::before {
+  content: "🇨🇭";
+}
+.flag-THA::before {
+  content: "🇹🇭";
+}
+.flag-TUR::before {
+  content: "🇹🇷";
+}
+.flag-UKR::before {
+  content: "🇺🇦";
+}
+.flag-GBR::before {
+  content: "🇬🇧";
+}
+.flag-USA::before {
+  content: "🇺🇸";
+}
+.flag-VNM::before {
+  content: "🇻🇳";
 }
