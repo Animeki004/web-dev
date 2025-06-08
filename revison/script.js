@@ -135,29 +135,84 @@ function loadReviews() {
 
   // Replace abusive words with blurred clickable spans
   function censorAbusiveWords(text) {
-    abusiveWords.sort((a, b) => b.length - a.length); // longest first
+    abusiveWords.sort((a, b) => b.length - a.length);
+
+    // Normalize: just lowercase & trim, keep unicode letters intact
+    const normalize = (str) => str.toLowerCase().trim();
+
+    const words = text.split(/\s+/);
 
     let censoredText = text;
 
+    const matches = [];
+
     abusiveWords.forEach((abuse) => {
-      const abuseClean = abuse
-        .toLowerCase()
-        .replace(/\s+/g, "\\s+")
-        .replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+      const abuseNorm = normalize(abuse);
+      if (!abuseNorm) return;
 
-      // Create regex allowing spaces/symbols between words of phrase:
-      // Replace spaces with \s*[\W_]*\s* to allow spaces or symbols in between
-      const abusePattern = abuseClean.replace(/\s+/g, "\\s*[\\W_]*\\s*");
+      const abuseWords = abuseNorm.split(/\s+/);
+      const abuseLen = abuseWords.length;
 
-      const regex = new RegExp(`\\b${abusePattern}\\b`, "gi");
+      // Sliding window of abuseLen words over input text words
+      for (let i = 0; i <= words.length - abuseLen; i++) {
+        const windowWords = words.slice(i, i + abuseLen);
+        const windowPhrase = windowWords.join(" ");
+        const windowNorm = normalize(windowPhrase);
 
-      censoredText = censoredText.replace(regex, (matched) => {
-        // Optionally do fuzzy matching here (levenshtein) if needed
-        return `<span class="blurred-word" tabindex="0" role="button" aria-label="Abusive word blurred. Click to confirm age.">${matched}</span>`;
-      });
+        const dist = levenshtein(windowNorm, abuseNorm);
+        const maxLen = Math.max(windowNorm.length, abuseNorm.length);
+        const similarity = 1 - dist / maxLen;
+
+        if (similarity >= 0.85) {
+          // Use Unicode-aware regex for word boundaries
+          // \p{L} matches any kind of letter from any language
+          // So we use a lookbehind/lookahead for non-letter or start/end of string
+          const escapedWindow = windowPhrase.replace(
+            /[-\/\\^$*+?.()|[\]{}]/g,
+            "\\$&"
+          );
+
+          // Construct pattern: ensure match is not part of longer word by checking letters around
+          const pattern = new RegExp(
+            `(?<!\\p{L})${escapedWindow}(?!\\p{L})`,
+            "giu"
+          );
+
+          matches.push({ phrase: windowPhrase, regex: pattern, similarity });
+        }
+      }
+    });
+
+    matches.forEach(({ phrase, regex }) => {
+      censoredText = censoredText.replace(
+        regex,
+        (matched) =>
+          `<span class="blurred-word" tabindex="0" role="button" aria-label="Abusive word blurred. Click to confirm age.">${matched}</span>`
+      );
     });
 
     return censoredText;
+
+    function levenshtein(a, b) {
+      const matrix = [];
+      for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+      for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+
+      for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+          if (b[i - 1] === a[j - 1]) {
+            matrix[i][j] = matrix[i - 1][j - 1];
+          } else {
+            matrix[i][j] = Math.min(
+              matrix[i - 1][j - 1] + 1,
+              matrix[i][j - 1] + 1,
+              matrix[i - 1][j] + 1
+            );
+          }
+        }
+      }
+      return matrix[b.length][a.length];
+    }
   }
 
   // Function to create star rating (your existing)
