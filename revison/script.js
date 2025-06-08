@@ -134,101 +134,27 @@ function loadReviews() {
   }
 
   // Replace abusive words with blurred clickable spans
-  // Utility: Levenshtein distance implementation
-  function levenshteinDistance(a, b) {
-    const matrix = [];
-    const lenA = a.length;
-    const lenB = b.length;
-
-    for (let i = 0; i <= lenB; i++) {
-      matrix[i] = [i];
-    }
-    for (let j = 0; j <= lenA; j++) {
-      matrix[0][j] = j;
-    }
-
-    for (let i = 1; i <= lenB; i++) {
-      for (let j = 1; j <= lenA; j++) {
-        if (b.charAt(i - 1).toLowerCase() === a.charAt(j - 1).toLowerCase()) {
-          matrix[i][j] = matrix[i - 1][j - 1];
-        } else {
-          matrix[i][j] = Math.min(
-            matrix[i - 1][j] + 1, // deletion
-            matrix[i][j - 1] + 1, // insertion
-            matrix[i - 1][j - 1] + 1 // substitution
-          );
-        }
-      }
-    }
-
-    return matrix[lenB][lenA];
-  }
-
-  // Utility: Calculate similarity percentage between two strings
-  function similarity(a, b) {
-    const dist = levenshteinDistance(a, b);
-    const maxLen = Math.max(a.length, b.length);
-    return ((maxLen - dist) / maxLen) * 100;
-  }
-
-  // Main censoring function with fuzzy matching
   function censorAbusiveWords(text) {
     abusiveWords.sort((a, b) => b.length - a.length); // longest first
 
     let censoredText = text;
 
-    // Clean and tokenize input text for fuzzy matching
-    const textLower = text.toLowerCase();
-
     abusiveWords.forEach((abuse) => {
-      const abuseLower = abuse.toLowerCase();
-
-      // Build regex pattern to catch exact + symbol-separated matches
-      const abuseClean = abuseLower
+      const abuseClean = abuse
+        .toLowerCase()
         .replace(/\s+/g, "\\s+")
         .replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+
+      // Create regex allowing spaces/symbols between words of phrase:
+      // Replace spaces with \s*[\W_]*\s* to allow spaces or symbols in between
       const abusePattern = abuseClean.replace(/\s+/g, "\\s*[\\W_]*\\s*");
+
       const regex = new RegExp(`\\b${abusePattern}\\b`, "gi");
 
-      // First do exact/symbol tolerant replacement
       censoredText = censoredText.replace(regex, (matched) => {
+        // Optionally do fuzzy matching here (levenshtein) if needed
         return `<span class="blurred-word" tabindex="0" role="button" aria-label="Abusive word blurred. Click to confirm age.">${matched}</span>`;
       });
-
-      // Now fuzzy matching:
-      // Break text into tokens (words), sliding windows for multi-word abuse
-      const abuseTokens = abuseLower.split(/\s+/);
-      const tokens = textLower.split(/\s+/);
-
-      for (let i = 0; i <= tokens.length - abuseTokens.length; i++) {
-        // Build candidate phrase of the same length as abuseTokens
-        const candidate = tokens.slice(i, i + abuseTokens.length).join(" ");
-
-        // Calculate similarity between candidate and abusive phrase
-        const sim = similarity(candidate, abuseLower);
-
-        if (sim >= 80 && sim < 100) {
-          // Replace original text substring with blurred span in censoredText
-
-          // Find original substring (case sensitive) from original text using regex
-          // Build regex to locate this candidate phrase in original text (case-insensitive)
-          // To avoid complex substring index issues, just replace first occurrence safely:
-
-          // Escape special chars in candidate for regex
-          const candidateRegexSafe = candidate.replace(
-            /[-\/\\^$*+?.()|[\]{}]/g,
-            "\\$&"
-          );
-          const candidateRegex = new RegExp(`\\b${candidateRegexSafe}\\b`, "i");
-
-          censoredText = censoredText.replace(candidateRegex, (matched) => {
-            // If already blurred (avoid double blur), skip
-            if (matched.includes("blurred-word")) return matched;
-
-            return `<span class="blurred-word" tabindex="0" role="button" aria-label="Abusive word blurred. Click to confirm age.">${matched}</span>`;
-          });
-        }
-      }
     });
 
     return censoredText;
