@@ -357,3 +357,20 @@ body.dark-mode input[type="range"],
 .toggle-button:hover {
   background: #5b7bef;
 }
+
+.iti__country-name {
+  color: black;
+}
+body.dark-mode .iti__country-name {
+  color: white;
+}
+
+body.dark-mode .iti__country-list {
+  background-color: #1e1e1e;
+}
+#phone {
+  width: 100%;
+}
+.iti.iti--allow-dropdown.iti--separate-dial-code {
+  width: 100%;
+}

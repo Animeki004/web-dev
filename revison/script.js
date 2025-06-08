@@ -81,6 +81,20 @@ function setupFormSubmission() {
         submitBtn.textContent = originalText;
       });
   });
+  // ----Phone number active---
+  const phoneInput = document.querySelector("#phone");
+
+  const iti = window.intlTelInput(phoneInput, {
+    separateDialCode: true,
+    preferredCountries: ["in", "us", "gb"],
+    utilsScript:
+      "https://cdn.jsdelivr.net/npm/intl-tel-input@17/build/js/utils.js",
+  });
+
+  // Allow only numbers while typing
+  phoneInput.addEventListener("input", () => {
+    phoneInput.value = phoneInput.value.replace(/\D/g, "");
+  });
 }
 
 // ---------- REVIEW PAGE LOGIC ----------

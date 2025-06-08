@@ -31,6 +31,15 @@
       property="og:image"
       content="https://animeki004.github.io/web-dev/site/assets/img/joke.jpeg"
     />
+    <!-- CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/intl-tel-input@17/build/css/intlTelInput.css"
+    />
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@17/build/js/intlTelInput.min.js"></script>
+
     <!-- replace with real image -->
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -60,11 +69,12 @@
         <div class="input-group">
           <label for="phone">Phone No.:</label>
           <input
-            type="number"
+            type="tel"
             name="phone"
             id="phone"
             placeholder="Enter your phone number"
             required
+            maxlength="15"
           />
         </div>
 
