@@ -299,3 +299,7 @@ body.light-mode .no-reviews {
   color: #ccc;
   margin-left: 4px;
 }
+.blurred-word {
+  transition: filter 0.3s ease;
+  user-select: none;
+}

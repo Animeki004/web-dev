@@ -38,7 +38,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js"></script>
   </head>
-  <body>
+  <body data-page="form">
     <div class="body3">
       <h1 class="form-title">Fill the form (Dare)</h1>
       <form id="submit-to-google-sheet" class="container">
@@ -177,35 +177,6 @@
       </form>
     </div>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script>
-      const scriptURL =
-        "https://script.google.com/macros/s/AKfycbw2XDytgN0lkgSTdBIZlPTY_rn-jX2WExMJI5DPyjw3avYF9O8yRtAwRHIKMex8xPaE/exec";
-      const form = document.forms["submit-to-google-sheet"];
-
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        var formData = new FormData(form);
-
-        fetch(scriptURL, { method: "POST", body: formData })
-          .then((response) => {
-            swal("Done", "Submitted Successfully.", "success").then(() => {
-              // Show second popup
-              swal({
-                title: "Wanna see what others wrote?",
-                text: "You can check out reviews and opinions!",
-                icon: "info",
-                buttons: ["Nope", "Yes!"],
-              }).then((willGo) => {
-                if (willGo) {
-                  window.location.href = "review.html"; // Redirect if user clicks "Yes"
-                }
-              });
-            });
-          })
-          .catch((error) => {
-            swal("Error", "Something went wrong. Please try again!", "error");
-          });
-      });
-    </script>
+    <script src="./script.js"></script>
   </body>
 </html>

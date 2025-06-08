@@ -6,7 +6,7 @@
     <title>Review Grid - Dark Mode</title>
     <link rel="stylesheet" href="./style1.css" />
   </head>
-  <body>
+  <body data-page="review">
     <h1>User Reviews</h1>
 
     <div class="toggle-container">
@@ -24,135 +24,8 @@
 
     <div class="grid-container" id="reviews"></div>
     <div id="no-reviews" class="no-reviews"></div>
-    <script>
-      // Toggle between dark and light mode
-      const toggleBtn = document.getElementById("toggleModeBtn");
-      const body = document.body;
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
-      function updateToggleButtonText() {
-        if (body.classList.contains("light-mode")) {
-          toggleBtn.textContent = "Switch to Dark Mode";
-        } else {
-          toggleBtn.textContent = "Switch to Light Mode";
-        }
-      }
-
-      toggleBtn.addEventListener("click", () => {
-        body.classList.toggle("light-mode");
-        updateToggleButtonText();
-      });
-
-      updateToggleButtonText();
-
-      // Helpers
-      function getInitials(name) {
-        if (!name) return "U";
-        return name
-          .split(" ")
-          .map((part) => part[0])
-          .join("")
-          .toUpperCase()
-          .slice(0, 2);
-      }
-
-      function createStarRating(starCount = 4) {
-        return "★".repeat(starCount) + "☆".repeat(5 - starCount);
-      }
-
-      // Escape HTML for safety
-      function escapeHTML(str) {
-        return String(str).replace(
-          /[&<>"']/g,
-          (m) =>
-            ({
-              "&": "&amp;",
-              "<": "&lt;",
-              ">": "&gt;",
-              '"': "&quot;",
-              "'": "&#39;",
-            }[m])
-        );
-      }
-
-      async function fetchReviews() {
-        const container = document.getElementById("reviews");
-
-        // Add loading class and show loader HTML
-        container.classList.add("loading");
-        container.innerHTML = `
-    <div class="loader" role="status" aria-label="Loading">
-      <div></div><div></div><div></div>
-    </div>
-  `;
-
-        try {
-          const res = await fetch(
-            "https://script.google.com/macros/s/AKfycbw2XDytgN0lkgSTdBIZlPTY_rn-jX2WExMJI5DPyjw3avYF9O8yRtAwRHIKMex8xPaE/exec"
-          );
-          const { data } = await res.json();
-
-          container.classList.remove("loading");
-          container.innerHTML = ""; // Clear loader
-
-          const emptyContainer = document.getElementById("no-reviews");
-
-          if (!data || data.length === 0) {
-            if (emptyContainer) {
-              emptyContainer.innerHTML = `
-      <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
-        <path d="M32 4C17.664 4 6 14.745 6 28c0 6.21 3.414 11.86 8.925 15.75L12 56l12.376-7.038A25.196 25.196 0 0 0 32 52c14.336 0 26-10.745 26-24S46.336 4 32 4zM22 26a4 4 0 1 1 8 0 4 4 0 0 1-8 0zm10 0a4 4 0 1 1 8 0 4 4 0 0 1-8 0z"/>
-      </svg>
-      <div>No reviews yet.</div>
-    `;
-              emptyContainer.style.display = "flex";
-            }
-            container.style.display = "none";
-            return;
-          }
-
-          // If data is available
-          if (emptyContainer) {
-            emptyContainer.remove(); // Completely remove from DOM
-          }
-          container.style.display = "grid";
-
-          data.reverse().forEach((item) => {
-            if (!item.name || !item.message) return;
-
-            const card = document.createElement("div");
-            card.className = "card";
-
-            const stars = createStarRating(item.rating || 4);
-            const date = item.timestamp ? new Date(item.timestamp) : new Date();
-            const vuHeight = Math.min(Math.max(parseInt(item.chutiya), 0), 100); // Clamp value between 0-100
-            const formattedDate = date.toLocaleString();
-
-            card.innerHTML = `
-        <div class="message">${escapeHTML(item.message)}</div>
-        <div class="stars">${stars}</div>
-        <div class="profile">
-          <div class="avatar">${getInitials(escapeHTML(item.name))}</div>
-          <div class="info">
-            <div class="name">${escapeHTML(item.name)}</div>
-            <div class="email">${escapeHTML(item.email || "")}</div>
-          </div>
-          <div class="vu-meter" aria-label="L Gen C level: ${vuHeight}">
-      <div class="vu-fill" style="height: ${vuHeight}%;"></div>
-    </div>
-        </div>
-        <div class="timestamp">${formattedDate}</div>
-      `;
-
-            container.appendChild(card);
-          });
-        } catch (err) {
-          container.classList.remove("loading");
-          container.innerText = "Failed to load reviews.";
-          console.error(err);
-        }
-      }
-
-      fetchReviews();
-    </script>
+    <script src="./script.js"></script>
   </body>
 </html>
