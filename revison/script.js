@@ -672,11 +672,19 @@ function loadReviews() {
         container.appendChild(card);
       });
 
-      // 🔥 Force cleanup on every refresh
-      sessionStorage.removeItem("isAdultConfirmed");
-      localStorage.removeItem("isAdultConfirmed");
+      // 🔁 Always reset confirmation storage on refresh
+      Object.keys(sessionStorage).forEach((key) => {
+        if (key.startsWith("isAdultConfirmed_")) {
+          sessionStorage.removeItem(key);
+        }
+      });
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith("isAdultConfirmed_")) {
+          localStorage.removeItem(key);
+        }
+      });
 
-      // Always blur words initially
+      // 🌀 Initialize all blurred words with styles and accessibility
       document.querySelectorAll(".blurred-word").forEach((span) => {
         span.style.filter = "blur(5px)";
         span.style.borderBottom = "1px dotted red";
@@ -686,17 +694,26 @@ function loadReviews() {
         span.setAttribute("aria-label", "Censored content, click to reveal");
       });
 
-      // Ask once per session
+      // 🔘 Add click listener to each blurred word
       document.querySelectorAll(".blurred-word").forEach((span) => {
         span.addEventListener("click", () => {
-          // Check if already confirmed
-          if (sessionStorage.getItem("isAdultConfirmed") === "yes") {
-            // Already confirmed, reveal immediately (if not already)
-            revealAllCensored();
-            return; // Skip popup
+          const card = span.closest(".card");
+          if (!card) return;
+
+          const cardIdElem = card.querySelector(".cardId");
+          const cardId = cardIdElem
+            ? cardIdElem.textContent.trim()
+            : `auto_${Date.now() + Math.random()}`;
+
+          const storageKey = `isAdultConfirmed_${cardId}`;
+
+          // ✅ If confirmed already, reveal immediately
+          if (sessionStorage.getItem(storageKey) === "yes") {
+            revealCensoredInCard(card);
+            return;
           }
 
-          // Else ask popup
+          // 🧠 Ask confirmation
           swal({
             title: "Are you 18 or older?",
             text: "This content may be sensitive.",
@@ -705,16 +722,16 @@ function loadReviews() {
             dangerMode: true,
           }).then((isAdult) => {
             if (isAdult) {
-              sessionStorage.setItem("isAdultConfirmed", "yes");
-              revealAllCensored();
+              sessionStorage.setItem(storageKey, "yes");
+              revealCensoredInCard(card);
             }
           });
         });
       });
 
-      // Reveal function
-      function revealAllCensored() {
-        document.querySelectorAll(".blurred-word").forEach((span) => {
+      // 🎯 Reveal only the words inside the specified card
+      function revealCensoredInCard(card) {
+        card.querySelectorAll(".blurred-word").forEach((span) => {
           span.style.filter = "none";
           span.style.borderBottom = "none";
           span.style.cursor = "default";
