@@ -431,16 +431,51 @@ function loadReviews() {
               replyContainer = document.createElement("div");
               replyContainer.classList.add("reply-panel");
               replyContainer.innerHTML = `
-      <div class="reply-header">
-        <span>Replies</span>
-      </div>
-      <div id="replyThread" class="reply-thread" style="overflow-y:auto; max-height: 60vh; margin-bottom: 10px;"></div>
-      <div class="reply-form">
-        <input type="text" class="replyName" placeholder="Your name" />
-        <textarea class="replyText" placeholder="Write your reply..."></textarea>
-        <button class="sendReply">Send</button>
-      </div>
-    `;
+  <div class="reply-header">
+    <span>Replies</span>
+  </div>
+  <div id="replyThread" class="reply-thread" style="overflow-y:auto; max-height: 60vh; margin-bottom: 10px;"></div>
+  <div class="reply-form">
+    <input type="text" class="replyName" placeholder="Your name" />
+    <textarea class="replyText" placeholder="Write your reply..."></textarea>
+    <button class="sendReply">Send</button>
+  </div>
+`;
+
+              // After inserting into DOM:
+              const nameInput = replyContainer.querySelector(".replyName");
+
+              // Check localStorage
+              const storedName = localStorage.getItem("replyName");
+              if (storedName) {
+                nameInput.value = storedName;
+                nameInput.disabled = true;
+              }
+
+              // Add reply send listener
+              replyContainer
+                .querySelector(".sendReply")
+                .addEventListener("click", () => {
+                  const replyInput = replyContainer.querySelector(".replyText");
+                  const name = nameInput.value.trim();
+                  const reply = replyInput.value.trim();
+
+                  if (!name || !reply) {
+                    alert("Please enter your name and reply.");
+                    return;
+                  }
+
+                  // Store name permanently
+                  if (!storedName) {
+                    localStorage.setItem("replyName", name);
+                    nameInput.disabled = true;
+                  }
+
+                  sendReply(cardId, name, reply).then(() => {
+                    replyInput.value = "";
+                    fetchReplies(cardId); // Refresh replies after sending
+                  });
+                });
 
               overlay.appendChild(replyContainer);
 
