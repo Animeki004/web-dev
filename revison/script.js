@@ -37,10 +37,17 @@ function setupFormSubmission() {
   });
 
   const scriptURL =
-    "https://script.google.com/macros/s/AKfycbzCpWSGGbWDis_dDF6xGkcmXsiiAAlFvGUynFcUINEGa6_4Y1zIw091GZenkzkuRu_7/exec";
+    "https://script.google.com/macros/s/AKfycbw8BOeLOah_cz9cdq7hGkEIICMUk47xhd0ZFlM_ZkE4tPC42GvPN4zZkWkeJer5Dqu6/exec";
   const form = document.forms["submit-to-google-sheet"];
   const submitBtn = form.querySelector('button[type="submit"]');
   const resetBtn = form.querySelector('button[type="reset"]'); // Reset button
+
+  function generateCardId() {
+    const now = new Date();
+    const timestamp = now.toISOString().replace(/[-:.TZ]/g, "");
+    const randomPart = Math.random().toString(36).substring(2, 8);
+    return `id-${timestamp}-${randomPart}`;
+  }
 
   form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -51,6 +58,8 @@ function setupFormSubmission() {
     submitBtn.textContent = "Submitting...";
 
     const formData = new FormData(form);
+    const cardId = generateCardId();
+    formData.append("cardId", cardId);
 
     fetch(scriptURL, { method: "POST", body: formData })
       .then((response) => {
@@ -256,7 +265,7 @@ function loadReviews() {
 
     try {
       const res = await fetch(
-        "https://script.google.com/macros/s/AKfycbzCpWSGGbWDis_dDF6xGkcmXsiiAAlFvGUynFcUINEGa6_4Y1zIw091GZenkzkuRu_7/exec"
+        "https://script.google.com/macros/s/AKfycbw8BOeLOah_cz9cdq7hGkEIICMUk47xhd0ZFlM_ZkE4tPC42GvPN4zZkWkeJer5Dqu6/exec"
       );
       const { data } = await res.json();
 
@@ -385,16 +394,15 @@ function loadReviews() {
             const isBigScreen = window.innerWidth >= 768;
             const isMouseDevice = window.matchMedia("(pointer: fine)").matches;
 
-            // 🛑 Skip if device is mobile or touch-based
             if (!isBigScreen || !isMouseDevice) return;
-
-            // 🛑 Skip if click was directly on .blurred-word or inside it
             if (event.target.closest(".blurred-word")) return;
-
-            // 🛑 Skip if overlay already exists
             if (document.querySelector(".modal-overlay")) return;
 
-            // ✅ Proceed with zoom
+            const cardIdElement = card.querySelector(".cardId");
+            const cardId = cardIdElement
+              ? cardIdElement.textContent.trim()
+              : null;
+
             const overlay = document.createElement("div");
             overlay.classList.add("modal-overlay");
 
@@ -413,12 +421,65 @@ function loadReviews() {
             zoomContainer.appendChild(closeBtn);
 
             overlay.appendChild(zoomContainer);
+
+            // Create reply container only if cardId exists
+            let replyContainer = null;
+
+            const REPLY_SCRIPT_URL =
+              "https://script.google.com/macros/s/AKfycbw8BOeLOah_cz9cdq7hGkEIICMUk47xhd0ZFlM_ZkE4tPC42GvPN4zZkWkeJer5Dqu6/exec"; // Replace
+            if (cardId) {
+              replyContainer = document.createElement("div");
+              replyContainer.classList.add("reply-panel");
+              replyContainer.innerHTML = `
+      <div class="reply-header">
+        <span>Replies</span>
+      </div>
+      <div id="replyThread" class="reply-thread" style="overflow-y:auto; max-height: 60vh; margin-bottom: 10px;"></div>
+      <div class="reply-form">
+        <input type="text" class="replyName" placeholder="Your name" />
+        <textarea class="replyText" placeholder="Write your reply..."></textarea>
+        <button class="sendReply">Send</button>
+      </div>
+    `;
+
+              overlay.appendChild(replyContainer);
+
+              // Fetch and show replies
+              fetchReplies(cardId);
+
+              // Send reply event
+              replyContainer
+                .querySelector(".sendReply")
+                .addEventListener("click", () => {
+                  const nameInput = replyContainer.querySelector(".replyName");
+                  const replyInput = replyContainer.querySelector(".replyText");
+                  const name = nameInput.value.trim();
+                  const reply = replyInput.value.trim();
+                  if (!name || !reply) {
+                    alert("Please enter your name and reply.");
+                    return;
+                  }
+                  sendReply(cardId, name, reply).then(() => {
+                    replyInput.value = "";
+                    fetchReplies(cardId); // Refresh replies after sending
+                  });
+                });
+            }
+
             document.body.appendChild(overlay);
             document.body.style.overflow = "hidden";
 
+            // Trigger animation with delay
+            requestAnimationFrame(() => {
+              overlay.classList.add("show");
+            });
+
             function closeModal() {
-              overlay.remove();
-              document.body.style.overflow = "";
+              overlay.classList.remove("show");
+              setTimeout(() => {
+                overlay.remove();
+                document.body.style.overflow = "";
+              }, 300); // match your CSS transition duration
             }
 
             overlay.addEventListener("click", (e) => {
@@ -429,8 +490,119 @@ function loadReviews() {
             window.addEventListener("keydown", (e) => {
               if (e.key === "Escape") closeModal();
             });
+
+            // --- Helper functions ---
+            async function fetchReplies(cardId) {
+              const threadDiv = replyContainer.querySelector("#replyThread");
+              threadDiv.innerHTML = "Loading replies...";
+
+              try {
+                const res = await fetch(
+                  `${REPLY_SCRIPT_URL}?cardId=${encodeURIComponent(cardId)}`
+                );
+                const replies = await res.json();
+
+                if (replies.length === 0) {
+                  threadDiv.innerHTML = "<em>No replies yet.</em>";
+                  return;
+                }
+
+                // Group replies by date
+                const grouped = {};
+                replies.forEach((r) => {
+                  const dateObj = new Date(r.timestamp);
+                  const dateStr = dateObj.toLocaleDateString("en-IN", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  });
+                  if (!grouped[dateStr]) grouped[dateStr] = [];
+                  grouped[dateStr].push(r);
+                });
+
+                // Build HTML
+                threadDiv.innerHTML = Object.entries(grouped)
+                  .map(([date, replies]) => {
+                    const repliesHTML = replies
+                      .map((r) => {
+                        const time = new Date(r.timestamp).toLocaleTimeString(
+                          "en-IN",
+                          {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          }
+                        );
+                        return `
+              <div class="reply-item">
+                <strong>${escapeHTML(r.name)}</strong>: ${escapeHTML(r.reply)}
+                <span class="reply-time">${time}</span>
+              </div>`;
+                      })
+                      .join("");
+                    return `
+          <div class="reply-date-group">
+            <div class="reply-date">${date}</div>
+            ${repliesHTML}
+          </div>
+        `;
+                  })
+                  .join("");
+              } catch (err) {
+                threadDiv.innerHTML = "<em>Error loading replies.</em>";
+                console.error(err);
+              }
+            }
+
+            async function sendReply(cardId, name, reply) {
+              try {
+                const formData = new FormData();
+                formData.append("cardId", cardId); // use lowercase keys to match server
+                formData.append("name", name);
+                formData.append("reply", reply);
+                console.log("Sending reply with data:", {
+                  cardId,
+                  name,
+                  reply,
+                });
+
+                const res = await fetch(REPLY_SCRIPT_URL, {
+                  method: "POST",
+                  body: formData,
+                });
+
+                const text = await res.text();
+                console.log("Reply submit response:", text); // Debug log
+
+                if (!res.ok || !text.includes("success")) {
+                  alert("Failed to submit reply. Please try again.");
+                }
+              } catch (err) {
+                alert("Network error submitting reply.");
+                console.error(err);
+              }
+            }
+
+            // Simple HTML escape to avoid XSS
+            function escapeHTML(str) {
+              return str.replace(
+                /[&<>"']/g,
+                (m) =>
+                  ({
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#39;",
+                  }[m])
+              );
+            }
           });
         });
+
+        // ----------replies---
+
+        // ------end---------
 
         const fullCountry = countryMap[item.country] || item.country;
         const countryCode = item.country || "UNK"; // fallback to UNK = Unknown
@@ -441,6 +613,9 @@ function loadReviews() {
                 <div class="avatar">${getInitials(escapeHTML(item.name))}</div>
                 <div class="info">
                 <div class="name">${escapeHTML(item.name)}</div>
+                <div class="cardId" style="display: none;">${escapeHTML(
+                  item.cardId
+                )}</div>
                 
                 <div class="email">${escapeHTML(item.email || "")}</div>
                 <div class="country flag-${countryCode}">${escapeHTML(
