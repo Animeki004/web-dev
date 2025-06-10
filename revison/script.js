@@ -37,7 +37,7 @@ function setupFormSubmission() {
   });
 
   const scriptURL =
-    "https://script.google.com/macros/s/AKfycbw8BOeLOah_cz9cdq7hGkEIICMUk47xhd0ZFlM_ZkE4tPC42GvPN4zZkWkeJer5Dqu6/exec";
+    "https://script.google.com/macros/s/AKfycbwDCGD_puwEXP28tXMkj6G8FjYXKn_zaXqwkKhgsfbnE6dp34GirHmsH-n7xRhFdcyT/exec";
   const form = document.forms["submit-to-google-sheet"];
   const submitBtn = form.querySelector('button[type="submit"]');
   const resetBtn = form.querySelector('button[type="reset"]'); // Reset button
@@ -52,7 +52,24 @@ function setupFormSubmission() {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    // Disable the submit button and show loading text
+    const nameInput = document.getElementById("name");
+    const nameValue = nameInput.value.trim();
+
+    // 🧠 Use censorAbusiveWords to detect if name has blurred parts (i.e., abusive)
+    const censored = censorAbusiveWords(nameValue);
+    const hasAbuse = censored.includes('class="blurred-word"');
+
+    if (hasAbuse) {
+      swal({
+        title: "🚫 Hold It Right There!",
+        text: "Trying to sneak in an abusive name?\nThat’s illegal, immoral, and mildly disappointing.",
+        icon: "error",
+        button: "I'll behave 😓",
+      });
+      return;
+    }
+
+    // ✅ If clean, proceed with submission...
     submitBtn.disabled = true;
     const originalText = submitBtn.textContent;
     submitBtn.textContent = "Submitting...";
@@ -61,17 +78,33 @@ function setupFormSubmission() {
     const cardId = generateCardId();
     formData.append("cardId", cardId);
 
-    fetch(scriptURL, { method: "POST", body: formData })
-      .then((response) => {
-        swal("Done", "Submitted Successfully.", "success").then(() => {
-          // Reset form fields
-          resetBtn.click(); // Triggers form reset
+    fetch(scriptURL, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        //   if (
+        //     data.result === "error" &&
+        //     data.message?.toLowerCase().includes("abusive")
+        //   ) {
+        //     swal({
+        //       title: "🚫 Hold It Right There!",
+        //       text: "Trying to sneak in an abusive name?\nThat’s illegal, immoral, and mildly disappointing.",
+        //       icon: "error",
+        //       button: "I'll behave 😓",
+        //     });
 
-          // Restore the submit button
+        //     submitBtn.disabled = false;
+        //     submitBtn.textContent = originalText;
+        //     return;
+        //   }
+
+        swal("Done", "Submitted Successfully.", "success").then(() => {
+          resetBtn.click();
           submitBtn.disabled = false;
           submitBtn.textContent = originalText;
 
-          // Ask user if they want to see reviews
           swal({
             title: "Wanna see what others wrote?",
             text: "You can check out reviews and opinions!",
@@ -90,6 +123,116 @@ function setupFormSubmission() {
         submitBtn.textContent = originalText;
       });
   });
+
+  // ------abuse--
+  fetch("abusiveWords.json")
+    .then((response) => response.json())
+    .then((data) => {
+      // abusiveWords = [...(data.words || []), ...(data.hindiwords || [])];
+      abusiveWords = data.words;
+      console.log("Loaded abusive words:", abusiveWords);
+    })
+    .catch((error) => {
+      console.error("Failed to load abusive words:", error);
+    });
+
+  // Escape HTML utility (same as your existing)
+  function escapeHTML(str) {
+    return String(str).replace(
+      /[&<>"']/g,
+      (m) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        }[m])
+    );
+  }
+
+  // Replace abusive words with blurred clickable spans
+  function censorAbusiveWords(text) {
+    abusiveWords.sort((a, b) => b.length - a.length);
+
+    // Normalize: just lowercase & trim, keep unicode letters intact
+    const normalize = (str) => str.toLowerCase().trim();
+
+    const words = text.split(/\s+/);
+
+    let censoredText = text;
+
+    const matches = [];
+
+    abusiveWords.forEach((abuse) => {
+      const abuseNorm = normalize(abuse);
+      if (!abuseNorm) return;
+
+      const abuseWords = abuseNorm.split(/\s+/);
+      const abuseLen = abuseWords.length;
+
+      // Sliding window of abuseLen words over input text words
+      for (let i = 0; i <= words.length - abuseLen; i++) {
+        const windowWords = words.slice(i, i + abuseLen);
+        const windowPhrase = windowWords.join(" ");
+        const windowNorm = normalize(windowPhrase);
+
+        const dist = levenshtein(windowNorm, abuseNorm);
+        const maxLen = Math.max(windowNorm.length, abuseNorm.length);
+        const similarity = 1 - dist / maxLen;
+
+        if (similarity >= 0.85) {
+          // Use Unicode-aware regex for word boundaries
+          // \p{L} matches any kind of letter from any language
+          // So we use a lookbehind/lookahead for non-letter or start/end of string
+          const escapedWindow = windowPhrase.replace(
+            /[-\/\\^$*+?.()|[\]{}]/g,
+            "\\$&"
+          );
+
+          // Construct pattern: ensure match is not part of longer word by checking letters around
+          const pattern = new RegExp(
+            `(?<!\\p{L})${escapedWindow}(?!\\p{L})`,
+            "giu"
+          );
+
+          matches.push({ phrase: windowPhrase, regex: pattern, similarity });
+        }
+      }
+    });
+
+    matches.forEach(({ phrase, regex }) => {
+      censoredText = censoredText.replace(
+        regex,
+        (matched) =>
+          `<span class="blurred-word" tabindex="0" role="button" aria-label="Abusive word blurred. Click to confirm age.">${matched}</span>`
+      );
+    });
+
+    return censoredText;
+
+    function levenshtein(a, b) {
+      const matrix = [];
+      for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+      for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+
+      for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+          if (b[i - 1] === a[j - 1]) {
+            matrix[i][j] = matrix[i - 1][j - 1];
+          } else {
+            matrix[i][j] = Math.min(
+              matrix[i - 1][j - 1] + 1,
+              matrix[i][j - 1] + 1,
+              matrix[i - 1][j] + 1
+            );
+          }
+        }
+      }
+      return matrix[b.length][a.length];
+    }
+  }
+
   // ----Phone number active---
   const phoneInput = document.querySelector("#phone");
 
@@ -133,9 +276,9 @@ function loadReviews() {
   fetch("abusiveWords.json")
     .then((response) => response.json())
     .then((data) => {
+      // abusiveWords = [...(data.words || []), ...(data.hindiwords || [])];
       abusiveWords = data.words;
       console.log("Loaded abusive words:", abusiveWords);
-      // Now you can use `abusiveWords` in your filtering logic
     })
     .catch((error) => {
       console.error("Failed to load abusive words:", error);
@@ -265,7 +408,7 @@ function loadReviews() {
 
     try {
       const res = await fetch(
-        "https://script.google.com/macros/s/AKfycbw8BOeLOah_cz9cdq7hGkEIICMUk47xhd0ZFlM_ZkE4tPC42GvPN4zZkWkeJer5Dqu6/exec"
+        "https://script.google.com/macros/s/AKfycbwDCGD_puwEXP28tXMkj6G8FjYXKn_zaXqwkKhgsfbnE6dp34GirHmsH-n7xRhFdcyT/exec"
       );
       const { data } = await res.json();
 
@@ -426,7 +569,7 @@ function loadReviews() {
             let replyContainer = null;
 
             const REPLY_SCRIPT_URL =
-              "https://script.google.com/macros/s/AKfycbw8BOeLOah_cz9cdq7hGkEIICMUk47xhd0ZFlM_ZkE4tPC42GvPN4zZkWkeJer5Dqu6/exec"; // Replace
+              "https://script.google.com/macros/s/AKfycbwDCGD_puwEXP28tXMkj6G8FjYXKn_zaXqwkKhgsfbnE6dp34GirHmsH-n7xRhFdcyT/exec"; // Replace
             if (cardId) {
               replyContainer = document.createElement("div");
               replyContainer.classList.add("reply-panel");
@@ -436,7 +579,7 @@ function loadReviews() {
   </div>
   <div id="replyThread" class="reply-thread" style="overflow-y:auto; max-height: 60vh; margin-bottom: 10px;"></div>
   <div class="reply-form">
-    <input type="text" class="replyName" placeholder="Your name" />
+    <input type="text" id="replyName" class="replyName" placeholder="Your name" />
     <textarea class="replyText" placeholder="Write your reply..."></textarea>
     <button class="sendReply">Send</button>
   </div>
@@ -588,33 +731,91 @@ function loadReviews() {
                 })
                 .join("");
             }
+            //  Reusable Abusive Field Checker------
+
+            function hasAbusiveContentInFields(fields) {
+              for (const [label, value] of Object.entries(fields)) {
+                const censored = censorAbusiveWords(value.trim());
+                const hasAbuse = censored.includes('class="blurred-word"');
+                if (hasAbuse) {
+                  return { field: label, abusive: true };
+                }
+              }
+              return { abusive: false };
+            }
 
             async function sendReply(cardId, name, reply) {
               try {
                 const formData = new FormData();
-                formData.append("cardId", cardId); // use lowercase keys to match server
+                formData.append("cardId", cardId);
                 formData.append("name", name);
                 formData.append("reply", reply);
+
                 console.log("Sending reply with data:", {
                   cardId,
                   name,
                   reply,
                 });
 
+                // 🔘 Find the submit button
+                const sendBtn = document.querySelector(".sendReply");
+                const originalText = sendBtn.textContent;
+                sendBtn.textContent = "Submitting...";
+                sendBtn.disabled = true;
+
+                // 🧠 Check multiple fields for abuse
+                const fieldsToCheck = {
+                  name: name,
+                  reply: reply,
+                };
+
+                const abuseCheck = hasAbusiveContentInFields(fieldsToCheck);
+
+                if (abuseCheck.abusive) {
+                  swal({
+                    title: "🚫 Hold It Right There!",
+                    text: "Trying to sneak in an abusive name,rply?\nThat’s illegal, immoral, and mildly disappointing.",
+                    icon: "error",
+                    button: "I'll behave 😓",
+                  });
+                  sendBtn.disabled = false;
+                  sendBtn.textContent = originalText;
+                  return;
+                }
+
+                // ✅ Proceed with submission
                 const res = await fetch(REPLY_SCRIPT_URL, {
                   method: "POST",
                   body: formData,
                 });
 
                 const text = await res.text();
-                console.log("Reply submit response:", text); // Debug log
+                console.log("Reply submit response:", text);
 
                 if (!res.ok || !text.includes("success")) {
-                  alert("Failed to submit reply. Please try again.");
+                  swal(
+                    "Oops!",
+                    "Failed to submit reply. Please try again.",
+                    "error"
+                  );
                 }
+
+                // ✅ Success — reset button (no Swal success alert needed here)
+                sendBtn.textContent = originalText;
+                sendBtn.disabled = false;
               } catch (err) {
-                alert("Network error submitting reply.");
-                console.error(err);
+                console.error("Network error:", err);
+                swal(
+                  "Network Error",
+                  "Could not connect to server. Try again later.",
+                  "error"
+                );
+
+                const sendBtn = document.querySelector(".sendReply");
+                if (sendBtn) {
+                  sendBtn.disabled = false;
+                  sendBtn.textContent = "Send";
+                }
               }
             }
 
