@@ -284,7 +284,7 @@ body.dark-mode .radio-group input,
 /* Buttons */
 body.dark-mode button,
 .body3.dark-mode button {
-  background: #6e8efb;
+  /* background: #6e8efb; */
   color: white;
   transition: 0.3s;
 }
