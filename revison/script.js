@@ -453,29 +453,6 @@ function loadReviews() {
               }
 
               // Add reply send listener
-              replyContainer
-                .querySelector(".sendReply")
-                .addEventListener("click", () => {
-                  const replyInput = replyContainer.querySelector(".replyText");
-                  const name = nameInput.value.trim();
-                  const reply = replyInput.value.trim();
-
-                  if (!name || !reply) {
-                    alert("Please enter your name and reply.");
-                    return;
-                  }
-
-                  // Store name permanently
-                  if (!storedName) {
-                    localStorage.setItem("replyName", name);
-                    nameInput.disabled = true;
-                  }
-
-                  sendReply(cardId, name, reply).then(() => {
-                    replyInput.value = "";
-                    fetchReplies(cardId); // Refresh replies after sending
-                  });
-                });
 
               overlay.appendChild(replyContainer);
 
@@ -529,64 +506,87 @@ function loadReviews() {
             // --- Helper functions ---
             async function fetchReplies(cardId) {
               const threadDiv = replyContainer.querySelector("#replyThread");
-              threadDiv.innerHTML = "Loading replies...";
+              if (!cardId) return;
+
+              const cacheKey = `replies_${cardId}`;
+              const cachedReplies =
+                JSON.parse(sessionStorage.getItem(cacheKey)) || [];
+
+              // STEP 1: Show cached replies instantly
+              if (cachedReplies.length > 0) {
+                renderReplies(threadDiv, cachedReplies);
+              } else {
+                threadDiv.innerHTML = "<em>Loading replies...</em>";
+              }
 
               try {
+                // STEP 2: Always fetch fresh replies from server
                 const res = await fetch(
                   `${REPLY_SCRIPT_URL}?cardId=${encodeURIComponent(cardId)}`
                 );
-                const replies = await res.json();
+                const serverReplies = await res.json();
 
-                if (replies.length === 0) {
-                  threadDiv.innerHTML = "<em>No replies yet.</em>";
-                  return;
+                // STEP 3: If there's a change, update UI and cache
+                const cachedStr = JSON.stringify(cachedReplies);
+                const serverStr = JSON.stringify(serverReplies);
+
+                if (cachedStr !== serverStr) {
+                  sessionStorage.setItem(cacheKey, serverStr);
+                  renderReplies(threadDiv, serverReplies);
                 }
 
-                // Group replies by date
-                const grouped = {};
-                replies.forEach((r) => {
-                  const dateObj = new Date(r.timestamp);
-                  const dateStr = dateObj.toLocaleDateString("en-IN", {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  });
-                  if (!grouped[dateStr]) grouped[dateStr] = [];
-                  grouped[dateStr].push(r);
-                });
-
-                // Build HTML
-                threadDiv.innerHTML = Object.entries(grouped)
-                  .map(([date, replies]) => {
-                    const repliesHTML = replies
-                      .map((r) => {
-                        const time = new Date(r.timestamp).toLocaleTimeString(
-                          "en-IN",
-                          {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: true,
-                          }
-                        );
-                        return `
-              <div class="reply-item">
-                <strong>${escapeHTML(r.name)}</strong>: ${escapeHTML(r.reply)}
-                <span class="reply-time">${time}</span>
-              </div>`;
-                      })
-                      .join("");
-                    return `
-          <div class="reply-date-group">
-            <div class="reply-date">${date}</div>
-            ${repliesHTML}
-          </div>
-        `;
-                  })
-                  .join("");
+                if (serverReplies.length === 0) {
+                  threadDiv.innerHTML = "<em>No replies yet.</em>";
+                }
               } catch (err) {
-                threadDiv.innerHTML = "<em>Error loading replies.</em>";
+                if (threadDiv.innerHTML.trim() === "") {
+                  threadDiv.innerHTML = "<em>Error loading replies.</em>";
+                }
                 console.error(err);
               }
+            }
+            function renderReplies(container, replies) {
+              // Group by date
+              const grouped = {};
+              replies.forEach((r) => {
+                const dateObj = new Date(r.timestamp);
+                const dateStr = dateObj.toLocaleDateString("en-IN", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                });
+                if (!grouped[dateStr]) grouped[dateStr] = [];
+                grouped[dateStr].push(r);
+              });
+
+              // Build HTML
+              container.innerHTML = Object.entries(grouped)
+                .map(([date, replies]) => {
+                  const repliesHTML = replies
+                    .map((r) => {
+                      const time = new Date(r.timestamp).toLocaleTimeString(
+                        "en-IN",
+                        {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true,
+                        }
+                      );
+                      return `
+            <div class="reply-item">
+              <strong>${escapeHTML(r.name)}</strong>: ${escapeHTML(r.reply)}
+              <span class="reply-time">${time}</span>
+            </div>`;
+                    })
+                    .join("");
+                  return `
+        <div class="reply-date-group">
+          <div class="reply-date">${date}</div>
+          ${repliesHTML}
+        </div>
+      `;
+                })
+                .join("");
             }
 
             async function sendReply(cardId, name, reply) {
